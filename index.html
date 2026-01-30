@@ -1,13 +1,428 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Portfolio | goco41</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gonzalo Pilar Sánchez | Portfolio ML & Data Science</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --bg-color: #0b0c26;
+            --bg-gradient: radial-gradient(circle at 50% 10%, #1a1c4b 0%, #0b0c26 60%);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-secondary: #b3b3cc;
+            --accent-color: #7c4dff;
+            --accent-hover: #5e35b1;
+            --success: #00e676;
+            --warning: #ffea00;
+        }
+
+        /* --- GENERAL --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+            margin-top: 0;
+        }
+
+        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        ul { list-style: none; padding: 0; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+        
+        /* --- HEADER --- */
+        header { text-align: center; padding: 80px 20px 60px; }
+        .profile-name {
+            font-size: 3.5rem; margin-bottom: 10px;
+            background: linear-gradient(90deg, #fff, #a5a6f6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+        .profile-title {
+            font-size: 1.2rem; color: var(--accent-color);
+            text-transform: uppercase; letter-spacing: 2px; font-weight: 600;
+        }
+        .contact-info {
+            display: flex; justify-content: center; gap: 25px; margin-top: 20px;
+            color: var(--text-secondary); font-size: 0.95rem;
+        }
+        .contact-info a:hover { color: var(--accent-color); }
+
+        /* --- SECTIONS --- */
+        .section-title {
+            font-size: 2rem; margin: 60px 0 30px;
+            border-left: 4px solid var(--accent-color); padding-left: 15px;
+        }
+
+        /* --- CARDS GENERAL --- */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        /* --- PROYECTOS DETALLADOS (NUEVO DISEÑO) --- */
+        .project-full {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 60px;
+            transition: transform 0.3s ease;
+        }
+
+        .project-full:hover {
+            border-color: rgba(124, 77, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .project-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 20px;
+        }
+
+        .project-title {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .project-tags span {
+            font-size: 0.8rem;
+            background: rgba(124, 77, 255, 0.1);
+            color: #d1c4e9;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-right: 8px;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+        }
+
+        /* Grid de Historia vs Tech */
+        .project-body {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 40px;
+        }
+
+        .story-column h4, .tech-column h4 {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .story-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            text-align: justify;
+        }
+
+        .story-text p { margin-bottom: 15px; }
+
+        .tech-list li {
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: #d1d1e0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .tech-list i {
+            color: var(--success);
+            margin-top: 5px;
+            font-size: 0.8rem;
+        }
+
+        .future-box {
+            margin-top: 20px;
+            background: rgba(0, 230, 118, 0.05);
+            border-left: 2px solid var(--success);
+            padding: 15px;
+            font-size: 0.85rem;
+            color: #c0decb;
+        }
+
+        .btn-project {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 25px;
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-project:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* --- FORMACIÓN & SKILLS --- */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.05);
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin: 0 5px 10px 0;
+            font-size: 0.9rem;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 850px) {
+            .project-body { grid-template-columns: 1fr; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .profile-name { font-size: 2.5rem; }
+        }
+
+        footer {
+            text-align: center; padding: 50px; color: var(--text-secondary);
+            border-top: 1px solid var(--card-border); margin-top: 60px;
+        }
+    </style>
 </head>
 <body>
-  <h1>Hola, soy goco41</h1>
-  <p>Portfolio de ML & Data Science</p>
-  <p><a href="https://github.com/goco41">GitHub</a></p>
+
+    <div class="container">
+        
+        <!-- HEADER -->
+        <header>
+            <h1 class="profile-name">Gonzalo Pilar Sánchez</h1>
+            <p class="profile-title">Portfolio (ML / Data Science)</p>
+            <div class="contact-info">
+                <span><i class="fas fa-map-marker-alt"></i> Sevilla, España</span>
+                <a href="mailto:gonzalopilar2005@gmail.com"><i class="fas fa-envelope"></i> gonzalopilar2005@gmail.com</a>
+                <a href="https://github.com/goco41" target="_blank"><i class="fab fa-github"></i> github.com/goco41</a>
+            </div>
+        </header>
+
+        <!-- PERFIL -->
+        <section>
+            <h2 class="section-title">Perfil</h2>
+            <div class="card">
+                <p>
+                    Estudiante de <strong>Análisis Económico (UPO)</strong> con profundo interés en <strong>Machine Learning y Data Science</strong>. 
+                    Soy autodidacta en Python y me mueve la curiosidad rigurosa: no me basta con que un modelo funcione, necesito entender <em>por qué</em> funciona.
+                    Me considero una persona constante y risueña, con vocación para explicar conceptos complejos y trabajar en equipo.
+                </p>
+            </div>
+        </section>
+
+        <!-- PROYECTOS DETALLADOS -->
+        <section>
+            <h2 class="section-title">Proyectos Destacados</h2>
+
+            <!-- PROYECTO 1 -->
+            <div class="project-full">
+                <div class="project-header">
+                    <h3 class="project-title">Predicción de Afinidad Cinematográfica (Small Data)</h3>
+                    <div class="project-tags">
+                        <span>Python</span> <span>APIs</span> <span>Custom AutoML</span> <span>Feature Engineering</span>
+                    </div>
+                </div>
+                <div class="project-body">
+                    <!-- Historia -->
+                    <div class="story-column">
+                        <h4><i class="fas fa-book-open"></i> El Origen</h4>
+                        <div class="story-text">
+                            <p>Hace años usaba una web llamada <em>Palomitacas</em> por una función única: predecía mi nota personal antes de ver la película. Cuando la función desapareció, intenté replicarla siendo principiante y fracasé estrepitosamente.</p>
+                            <p>Meses atrás retomé el reto. Sabía que mi dataset personal era ínfimo ("matar moscas a cañonazos"), pero quería ver cuánto había mejorado. No buscaba métricas de libro, sino exprimir cada dato para construir una herramienta que realmente me guiase.</p>
+                            <p>El resultado es una solución humilde pero funcional, que integra APIs y modelos personalizados, demostrando que en entornos de baja información, la ingeniería de datos supera a la complejidad del algoritmo.</p>
+                        </div>
+                    </div>
+                    <!-- Técnica -->
+                    <div class="tech-column">
+                        <h4><i class="fas fa-cogs"></i> Arquitectura y Retos</h4>
+                        <ul class="tech-list">
+                            <li><i class="fas fa-check"></i> <strong>Enriquecimiento OMDb API:</strong> Ingesta de metadatos técnicos (BoxOffice, Rotten Tomatoes) para expandir el dataset.</li>
+                            <li><i class="fas fa-check"></i> <strong>Positional Multi-Label Encoder:</strong> Innovación propia para manejar variables categóricas masivas (actores) sin explotar la dimensionalidad.</li>
+                            <li><i class="fas fa-check"></i> <strong>Métrica de Estabilidad:</strong> Diseño de una función de pérdida personalizada que penaliza la varianza entre semillas (robustez > precisión pura).</li>
+                            <li><i class="fas fa-check"></i> <strong>Adición Social:</strong> Integración de valoraciones externas como proxy de filtrado colaborativo.</li>
+                        </ul>
+                        <div class="future-box">
+                            <strong>Futuro:</strong> Implementación de transformaciones no lineales (tanh, sinh) para corregir el sesgo de escala en las notas extremas (9-10).
+                        </div>
+                        <a href="https://github.com/goco41/ML-DS-para-Peliculas" target="_blank" class="btn-project">Ver Código en GitHub</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROYECTO 2 -->
+            <div class="project-full">
+                <div class="project-header">
+                    <h3 class="project-title">Infraestructura para Validación de Alphas</h3>
+                    <div class="project-tags">
+                        <span>Trading Algorítmico</span> <span>Estadística Rigurosa</span> <span>Numba</span> <span>Backtesting</span>
+                    </div>
+                </div>
+                <div class="project-body">
+                    <!-- Historia -->
+                    <div class="story-column">
+                        <h4><i class="fas fa-book-open"></i> El Origen</h4>
+                        <div class="story-text">
+                            <p>Todo empezó viendo MetaTrader 5 en el ordenador de mi Jefe de Estudios, quien tenía una estrategia "secreta". Acepté el desafío de construir la mía, pero fracasé repetidamente: cada vez que tenía algo rentable, descubría <em>data leakage</em> o sobreajuste.</p>
+                            <p>Tras muchos intentos, dejé de buscar rentabilidad inmediata y acepté la realidad: "si entra basura, sale basura". Cambié el enfoque radicalmente hacia el método científico.</p>
+                            <p>El éxito de este proyecto no es una estrategia milagrosa, sino la infraestructura construida. Ahora dispongo de un marco robusto para separar la suerte de la verdadera ventaja estadística, validando cualquier idea futura con honestidad.</p>
+                        </div>
+                    </div>
+                    <!-- Técnica -->
+                    <div class="tech-column">
+                        <h4><i class="fas fa-microchip"></i> El Core Técnico</h4>
+                        <ul class="tech-list">
+                            <li><i class="fas fa-check"></i> <strong>Numba JIT:</strong> Motores de ejecución de alto rendimiento para minería masiva de parámetros.</li>
+                            <li><i class="fas fa-check"></i> <strong>CPCV (Combinatorial Purged Cross-Validation):</strong> Validación que elimina el leakage y simula múltiples caminos históricos.</li>
+                            <li><i class="fas fa-check"></i> <strong>Deflated Sharpe Ratio & FDR:</strong> Corrección estadística para evitar el p-hacking y los falsos positivos en backtesting.</li>
+                            <li><i class="fas fa-check"></i> <strong>Nuevos Paradigmas:</strong> Implementación de indicadores basados en entropía y fractales (Hurst, Variance Ratio) frente al análisis técnico clásico.</li>
+                        </ul>
+                        <a href="https://github.com/goco41/ind-4-alphas/tree/main" target="_blank" class="btn-project">Ver Código en GitHub</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROYECTO 3 -->
+            <div class="project-full">
+                <div class="project-header">
+                    <h3 class="project-title">Réplica Crítica: SRDDQN + TimesNet (Finance)</h3>
+                    <div class="project-tags">
+                        <span>Deep Reinforcement Learning</span> <span>Computer Vision</span> <span>Research</span>
+                    </div>
+                </div>
+                <div class="project-body">
+                    <!-- Historia -->
+                    <div class="story-column">
+                        <h4><i class="fas fa-book-open"></i> El Origen</h4>
+                        <div class="story-text">
+                            <p>Buscando soluciones avanzadas, descubrí el paper <strong>SRDDQN</strong>. Me cautivó su uso de <strong>TimesNet</strong>: tratar series temporales como imágenes mediante la Transformada de Fourier. Decidí replicarlo completamente.</p>
+                            <p>El proceso fue una lección de rigor. El paper reportaba métricas extraordinarias que yo no lograba replicar. Al investigar, detecté que el original usaba splits simples (overfitting) e ignoraba costes reales como el spread Bid-Ask.</p>
+                            <p>Mi implementación arrojó resultados más humildes pero realistas. Fue una de mis experiencias de aprendizaje más enriquecedoras sobre la discrepancia entre la teoría académica y la realidad del mercado.</p>
+                        </div>
+                    </div>
+                    <!-- Técnica -->
+                    <div class="tech-column">
+                        <h4><i class="fas fa-brain"></i> Innovación y Arquitectura</h4>
+                        <ul class="tech-list">
+                            <li><i class="fas fa-check"></i> <strong>TimesNet Backbone:</strong> Uso de FFT para transformar series 1D en tensores 2D, capturando patrones multi-escala.</li>
+                            <li><i class="fas fa-check"></i> <strong>Self-Rewarding Hybrid RL:</strong> Agente de doble cabezal (Q-Head + Reward-Head) para acelerar la convergencia.</li>
+                            <li><i class="fas fa-check"></i> <strong>Entorno Realista:</strong> Simulación estricta de costes (Spread, Swap, Mark-to-Market) a diferencia del paper original.</li>
+                            <li><i class="fas fa-check"></i> <strong>Etiquetado Experto:</strong> Uso de un "oráculo" (look-ahead limitado) durante el entrenamiento para guiar el aprendizaje.</li>
+                        </ul>
+                        <div class="future-box">
+                            <strong>Futuro:</strong> Evolución hacia Vision Transformers (ViT) y Meta-Learning (DoubleAdapt) para mitigar el <em>concept drift</em>.
+                        </div>
+                        <a href="https://github.com/goco41/SRDDQN4tr" target="_blank" class="btn-project">Ver Código en GitHub</a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- FORMACIÓN Y SKILLS (Grid 2 columnas) -->
+        <div class="grid-2">
+            
+            <!-- FORMACIÓN -->
+            <section>
+                <h2 class="section-title">Formación Académica</h2>
+                <div class="card">
+                    <h3 style="margin-bottom: 5px;">Grado en Análisis Económico</h3>
+                    <p style="color: var(--accent-color); font-weight: 600;">Universidad Pablo de Olavide (UPO)</p>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">2025 – 2029</p>
+                    <ul style="margin-top: 15px; list-style: circle; padding-left: 20px; color: var(--text-secondary);">
+                        <li>Delegado de clase (2025-2026)</li>
+                        <li>Miembro activo del club de debate</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: 15px;">Certificaciones</h3>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Deep Learning Specialization</strong> — DeepLearning.AI<br>
+                        <a href="https://www.coursera.org/account/accomplishments/specialization/7ND7TBWJMWN6" target="_blank" style="color: var(--accent-color); font-size: 0.85rem;">Ver Credencial</a>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Machine Learning Specialization</strong> — Stanford University<br>
+                        <a href="https://www.coursera.org/account/accomplishments/specialization/EHJNK64CH2KH" target="_blank" style="color: var(--accent-color); font-size: 0.85rem;">Ver Credencial</a>
+                    </div>
+                    <div>
+                        <strong>Financial Markets</strong> — Yale University<br>
+                        <a href="https://www.coursera.org/account/accomplishments/verify/GXI9YC44R2E2" target="_blank" style="color: var(--accent-color); font-size: 0.85rem;">Ver Credencial</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COMPETENCIAS -->
+            <section>
+                <h2 class="section-title">Competencias</h2>
+                <div class="card">
+                    <h4 style="color:white; margin-bottom:15px;">Stack Tecnológico</h4>
+                    <div>
+                        <span class="skill-tag">Python Avanzado</span>
+                        <span class="skill-tag">Pandas / NumPy</span>
+                        <span class="skill-tag">Scikit-learn</span>
+                        <span class="skill-tag">PyTorch</span>
+                        <span class="skill-tag">Numba</span>
+                        <span class="skill-tag">AutoML</span>
+                    </div>
+
+                    <h4 style="color:white; margin-bottom:15px; margin-top: 25px;">Data Science & ML</h4>
+                    <div>
+                        <span class="skill-tag">Series Temporales</span>
+                        <span class="skill-tag">Deep Reinforcement Learning</span>
+                        <span class="skill-tag">Feature Engineering</span>
+                        <span class="skill-tag">Backtesting Riguroso</span>
+                        <span class="skill-tag">Estadística Inferencial</span>
+                    </div>
+
+                    <h4 style="color:white; margin-bottom:15px; margin-top: 25px;">Idiomas</h4>
+                    <span class="skill-tag">Inglés B2 (Certificado EOI)</span>
+                    <span class="skill-tag">Español (Nativo)</span>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <h4 style="color:white;">Experiencia y Liderazgo</h4>
+                    <ul style="margin-top: 15px; font-size: 0.95rem; color: var(--text-secondary);">
+                        <li style="margin-bottom: 10px;">• <strong>Tutorías de Estadística (UPO):</strong> Apoyo académico voluntario a compañeros.</li>
+                        <li style="margin-bottom: 10px;">• <strong>Delegado de Clase:</strong> Coordinación profesorado-alumnado.</li>
+                        <li>• <strong>Cartas de Recomendación:</strong> Disponibles (José María Okean / Alfredo García).</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>Gonzalo Pilar Sánchez &copy; 2026</p>
+            <p style="font-size: 0.8rem; margin-top: 10px;">Diseñado con pasión por los datos.</p>
+        </footer>
+
+    </div>
+
 </body>
 </html>
