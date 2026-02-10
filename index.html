@@ -1,802 +1,556 @@
 <!DOCTYPE html>
-<html lang="es">
-  <head>
+<html lang="es" class="scroll-smooth">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gonzalo Pilar Sánchez | Portfolio ML & Quant</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              'brand-blue': '#1e3a8a', // Ajustado ligeramente a un azul más "Data Science" pero manteniendo el estilo oscuro
-              'brand-blue-dark': '#0f172a',
-              'brand-gray': '#E8E6E0',
-              'white': '#F8FAFC', 
-            },
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
-            },
-            backgroundImage: {
-              'halftone': "radial-gradient(circle, #1e3a8a 2px, transparent 2.5px)",
-            },
-            backgroundSize: {
-              'halftone': '8px 8px',
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      /* Custom Scrollbar for that technical feel */
-      ::-webkit-scrollbar {
+    <title>Gonzalo Pilar Sánchez | Portfolio ML & Data Science</title>
+code
+Code
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- React & Babel -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        transition: background 0.5s ease, color 0.5s ease;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Poppins', sans-serif;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
         width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #E8E6E0;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #1e3a8a;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #0f172a;
-      }
-      
-      .text-outline {
-        -webkit-text-stroke: 1px currentColor;
-        color: transparent;
-      }
-      
-      .blend-mode-multiply {
-        mix-blend-mode: multiply;
-      }
-    </style>
-  <script type="importmap">
+    }
+    ::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.05);
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #666;
+    }
+</style>
+<script type="importmap">
 {
   "imports": {
-    "lucide-react": "https://esm.sh/lucide-react@0.463.0",
-    "react-dom/client": "https://esm.sh/react-dom@19.2.4/client",
-    "react": "https://esm.sh/react@19.2.4",
-    "framer-motion": "https://esm.sh/framer-motion@11.15.0"
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4"
   }
 }
 </script>
 </head>
-  <body>
+<body>
     <div id="root"></div>
+code
+Code
+<script type="text/babel">
+    const { useState, useEffect, createContext, useContext } = React;
 
-    <script type="text/babel" data-type="module" data-presets="react">
-      import React, { useState, useEffect, useRef } from 'react';
-      import { createRoot } from 'react-dom/client';
-      import { Menu, Plus, ArrowRight, ArrowLeft, Github, Linkedin, Mail, FileText } from 'lucide-react';
-      import { motion, AnimatePresence, useInView } from 'framer-motion';
+    // --- THEME CONFIGURATION ---
+    const themes = {
+        'dark-purple': {
+            name: 'dark-purple',
+            isDark: true,
+            colors: {
+                background: 'radial-gradient(circle at 50% 10%, #1a1c4b 0%, #0b0c26 60%)',
+                accent: '#7c4dff',
+                accentHover: '#6200ea',
+                textMain: 'text-white',
+                textSecondary: 'text-gray-400',
+                surface: 'bg-white/[0.03]',
+                border: 'border-white/10',
+                navbarScrolled: 'bg-[#0b0c26]/85',
+                footerBg: 'bg-[#08091f]'
+            }
+        },
+        'dark-blue': {
+            name: 'dark-blue',
+            isDark: true,
+            colors: {
+                background: 'radial-gradient(circle at 50% 10%, #1e3a8a 0%, #0f172a 60%)',
+                accent: '#3b82f6',
+                accentHover: '#2563eb',
+                textMain: 'text-white',
+                textSecondary: 'text-slate-400',
+                surface: 'bg-slate-800/40',
+                border: 'border-slate-700/50',
+                navbarScrolled: 'bg-[#0f172a]/85',
+                footerBg: 'bg-slate-950'
+            }
+        },
+        'light-purple': {
+            name: 'light-purple',
+            isDark: false,
+            colors: {
+                background: 'radial-gradient(circle at 50% 10%, #ede9fe 0%, #f3f4f6 60%)',
+                accent: '#7c4dff',
+                accentHover: '#6200ea',
+                textMain: 'text-gray-900',
+                textSecondary: 'text-gray-600',
+                surface: 'bg-white',
+                border: 'border-gray-200',
+                navbarScrolled: 'bg-white/90',
+                footerBg: 'bg-[#0b0c26]'
+            }
+        },
+        'light-blue': {
+            name: 'light-blue',
+            isDark: false,
+            colors: {
+                background: 'radial-gradient(circle at 50% 10%, #eff6ff 0%, #f8fafc 60%)',
+                accent: '#2563eb',
+                accentHover: '#1d4ed8',
+                textMain: 'text-slate-900',
+                textSecondary: 'text-slate-600',
+                surface: 'bg-white',
+                border: 'border-slate-200',
+                navbarScrolled: 'bg-white/90',
+                footerBg: 'bg-slate-900'
+            }
+        }
+    };
 
-      // --- HELPERS ---
-      
-      const MaskText = ({ children, className = "" }) => {
-        const ref = useRef(null);
-        const isInView = useInView(ref, { once: true, margin: "-10%" });
-        
-        const text = typeof children === 'string' ? children : '';
-        const words = text.split(" ");
+    const ThemeContext = createContext();
 
-        return (
-          <span ref={ref} className={`inline-block flex-wrap ${className}`}>
-            {words.map((word, i) => (
-              <span key={i} className="inline-block overflow-hidden align-top mr-[0.2em] pb-[0.1em]">
-                <motion.span
-                  initial={{ y: "110%" }}
-                  animate={isInView ? { y: "0%" } : { y: "110%" }}
-                  transition={{ 
-                    duration: 0.8, 
-                    ease: [0.33, 1, 0.68, 1],
-                    delay: i * 0.01 
-                  }}
-                  className="inline-block"
-                >
-                  {word}
-                </motion.span>
-              </span>
-            ))}
-          </span>
-        );
-      };
-
-      // --- COMPONENTS ---
-
-      const Header = () => {
-        const [isScrolled, setIsScrolled] = useState(false);
+    const ThemeProvider = ({ children }) => {
+        const [currentThemeName, setCurrentThemeName] = useState('dark-purple');
+        const theme = themes[currentThemeName];
 
         useEffect(() => {
-          const handleScroll = () => {
-            const threshold = window.innerHeight - 100;
-            setIsScrolled(window.scrollY > threshold);
-          };
-          
-          handleScroll();
-          window.addEventListener('scroll', handleScroll);
-          return () => window.removeEventListener('scroll', handleScroll);
+            document.body.style.background = theme.colors.background;
+            document.body.style.minHeight = '100vh';
+            document.body.style.color = theme.isDark ? 'white' : '#1f2937';
+        }, [theme]);
+
+        return (
+            <ThemeContext.Provider value={{ theme, setTheme: setCurrentThemeName }}>
+                {children}
+            </ThemeContext.Provider>
+        );
+    };
+
+    const useTheme = () => useContext(ThemeContext);
+
+    // --- COMPONENTS ---
+
+    const ThemeSwitcher = () => {
+        const { setTheme, theme } = useTheme();
+
+        const buttons = [
+            { id: 'dark-purple', label: 'Dark Purple', bg: 'bg-[#0b0c26]', border: 'border-[#7c4dff]' },
+            { id: 'dark-blue', label: 'Dark Blue', bg: 'bg-[#0f172a]', border: 'border-[#3b82f6]' },
+            { id: 'light-purple', label: 'Light Purple', bg: 'bg-[#f3f4f6]', border: 'border-[#7c4dff]' },
+            { id: 'light-blue', label: 'Light Blue', bg: 'bg-[#f8fafc]', border: 'border-[#2563eb]' },
+        ];
+
+        return (
+            <div className="fixed top-5 right-5 z-[60] flex gap-2 p-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-lg">
+                {buttons.map((btn) => (
+                    <button
+                        key={btn.id}
+                        onClick={() => setTheme(btn.id)}
+                        title={btn.label}
+                        className={`w-6 h-6 rounded-full ${btn.bg} border-2 ${btn.border} ${
+                            theme.name === btn.id ? 'scale-125 ring-2 ring-white shadow-lg' : 'hover:scale-110 opacity-70 hover:opacity-100'
+                        } transition-all duration-300`}
+                    />
+                ))}
+            </div>
+        );
+    };
+
+    const Navbar = () => {
+        const [isScrolled, setIsScrolled] = useState(false);
+        const { theme } = useTheme();
+
+        useEffect(() => {
+            const handleScroll = () => {
+                setIsScrolled(window.scrollY > 20);
+            };
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
         }, []);
 
-        return (
-          <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-            isScrolled 
-              ? 'bg-white/95 backdrop-blur-md border-b border-gray-200 py-3' 
-              : 'bg-transparent border-transparent py-6'
-          }`}>
-            <div className="container mx-auto px-4 sm:px-8 flex justify-between items-center">
-              <div className="flex items-center min-h-[48px]">
-                <div className={`overflow-hidden transition-all duration-700 ease-[0.22,1,0.36,1] flex items-center ${
-                  isScrolled ? 'max-w-[400px] opacity-100' : 'max-w-0 opacity-0'
-                }`}>
-                  <span className="font-mono text-xs uppercase tracking-widest text-brand-blue font-bold whitespace-nowrap hidden md:block lg:hidden xl:block">
-                    Gonzalo Pilar Sánchez
-                  </span>
-                </div>
-              </div>
-
-              <nav className={`hidden lg:flex items-center gap-6 font-mono text-xs uppercase tracking-widest transition-colors duration-300 ${
-                isScrolled ? 'text-gray-600' : 'text-white'
-              }`}>
-                <a href="#" className="hover:text-brand-blue transition-colors">Bio</a>
-                <a href="#" className="hover:text-brand-blue transition-colors">Stack</a>
-                <a href="#" className="hover:text-brand-blue transition-colors">Proyectos</a>
-                <a href="#" className="hover:text-brand-blue transition-colors">CV</a>
-              </nav>
-
-              <div className="flex items-center gap-8">
-                <div className={`hidden md:flex flex-col text-right font-mono text-[10px] uppercase leading-tight transition-colors duration-300 ${
-                  isScrolled ? 'text-gray-500' : 'text-white/90'
-                }`}>
-                  <a href="#" className="hover:text-brand-blue">ML Engineer</a>
-                  <a href="#" className="hover:text-brand-blue">Quant Finance</a>
-                  <a href="#" className="hover:text-brand-blue">Sevilla, ES</a>
-                </div>
-                
-                <button className={`w-12 h-12 flex items-center justify-center transition-colors duration-300 ${
-                  isScrolled 
-                    ? 'bg-brand-blue text-white hover:bg-brand-blue-dark' 
-                    : 'bg-white text-brand-blue hover:bg-gray-100'
-                }`}>
-                    <Menu size={20} />
-                </button>
-              </div>
-            </div>
-          </header>
-        );
-      };
-
-      const Hero = () => {
-        return (
-          <section className="relative w-full h-screen overflow-hidden flex flex-col justify-between bg-brand-blue pt-20 pb-12 px-4 sm:px-8">
-            <div className="absolute inset-0 z-0">
-              <motion.div 
-                initial={{ scale: 1.1, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
-                className="w-full h-full"
-              >
-                {/* Image swapped for abstract data/tech visualization */}
-                <img 
-                  src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?q=80&w=2074&auto=format&fit=crop" 
-                  alt="Abstract Data Lines" 
-                  className="w-full h-full object-cover grayscale mix-blend-multiply opacity-40"
-                />
-              </motion.div>
-              <div className="absolute inset-0 bg-brand-blue mix-blend-multiply opacity-50"></div>
-              <div className="absolute inset-0 opacity-10" style={{ 
-                backgroundImage: 'radial-gradient(circle, #E8E6E0 1px, transparent 1px)',
-                backgroundSize: '6px 6px'
-              }}></div>
-            </div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 1 }}
-              className="relative z-10 w-full border-t border-white/30 pt-6 flex flex-col md:flex-row justify-between items-start gap-4"
-            >
-              <span className="font-mono text-white text-[10px] sm:text-xs uppercase tracking-[0.2em] font-medium">Machine Learning & Data Science</span>
-              <span className="font-mono text-white text-[10px] sm:text-xs uppercase tracking-[0.2em] font-medium text-right">Quantitative Finance Research</span>
-            </motion.div>
-            
-            <div className="relative z-10 w-full pb-8 md:pb-16">
-              <h1 className="text-white text-[11vw] leading-[0.75] font-extrabold tracking-tighter uppercase pointer-events-none select-none">
-                {['Gonzalo', 'Pilar', 'Sánchez'].map((line, index) => (
-                  <div key={index} className="overflow-hidden h-[0.9em]">
-                    <motion.span
-                      initial={{ y: "100%" }}
-                      animate={{ y: "0%" }}
-                      transition={{ 
-                        duration: 1.4, 
-                        ease: [0.16, 1, 0.3, 1],
-                        delay: 0.3 + (index * 0.1)
-                      }}
-                      className="block origin-top-left"
-                    >
-                      {line}
-                    </motion.span>
-                  </div>
-                ))}
-              </h1>
-            </div>
-          </section>
-        );
-      };
-
-      const Intro = () => {
-        return (
-          <section className="bg-brand-blue text-white py-24 sm:py-40 border-b border-white/10">
-            <div className="container mx-auto px-4 sm:px-8">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-                <div className="lg:col-span-8">
-                    <h2 className="text-2xl sm:text-4xl md:text-5xl font-semibold leading-tight tracking-tight">
-                      <MaskText>
-                        Desarrollador enfocado en Machine Learning, Data Science y Finanzas Cuantitativas. Busco transformar datos complejos en decisiones financieras y herramientas útiles, priorizando siempre el rigor científico.
-                      </MaskText>
-                    </h2>
-                </div>
-                
-                <div className="lg:col-span-4 flex flex-col justify-between font-mono text-xs uppercase tracking-[0.15em] opacity-70 leading-relaxed pt-3">
-                  <div className="mb-10">
-                    <MaskText>
-                      Me mueve la curiosidad intelectual y el deseo de entender cómo funcionan realmente los modelos. "Las funciones y la estadística modelan el mundo."
-                    </MaskText>
-                  </div>
-                  <div className="pt-8 border-t border-white/10">
-                    <MaskText>
-                      Me considero una persona constante, con vocación para explicar conceptos complejos y trabajar en equipo.
-                    </MaskText>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        );
-      };
-
-      const Services = () => {
-        const [activeId, setActiveId] = useState('1');
-        // Mapped from "Stack Tecnológico"
-        const services = [
-          { id: '1', title: 'Python & Librerías', description: 'Dominio avanzado de Python. Uso extensivo de Pandas y NumPy para manipulación de datos, Scikit-learn para modelado clásico y Numba para optimización de rendimiento.', image: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2070&auto=format&fit=crop' },
-          { id: '2', title: 'Data Science & ML', description: 'Experiencia en Ingeniería de Características, Análisis de Series Temporales, técnicas de AutoML y Aprendizaje por Refuerzo Profundo (Deep RL).', image: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop' },
-          { id: '3', title: 'Finanzas Quant', description: 'Desarrollo de infraestructura de Backtesting Riguroso, Estadística Inferencial y Validación de Alphas para separar la suerte de la ventaja estadística.', image: 'https://images.unsplash.com/photo-1611974765270-ca12586343bb?q=80&w=2070&auto=format&fit=crop' },
-          { id: '4', title: 'Deep Learning', description: 'Implementación de arquitecturas modernas como TimesNet y Agentes de RL Híbridos usando PyTorch para investigación y predicción.', image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop' },
-          { id: '5', title: 'Investigación', description: 'Capacidad para leer, comprender y reproducir papers académicos (State of the Art) adaptándolos a entornos de mercado realistas.', image: 'https://images.unsplash.com/photo-1532619675605-1ede6c2ed2b0?q=80&w=2070&auto=format&fit=crop' },
-          { id: '6', title: 'Idiomas', description: 'Español (Nativo) e Inglés (B2 Certificado). Capacidad para documentación técnica y comunicación fluida en entornos internacionales.', image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=1973&auto=format&fit=crop' },
-        ];
+        const navClasses = isScrolled
+            ? `${theme.colors.navbarScrolled} backdrop-blur-md border-b ${theme.colors.border} shadow-sm`
+            : 'bg-transparent';
 
         return (
-          <section className="bg-white min-h-screen flex flex-col lg:flex-row border-b border-gray-300">
-            <div className="lg:w-1/2 lg:sticky lg:top-0 lg:h-screen flex flex-col justify-between p-8 lg:p-16 border-b lg:border-b-0 lg:border-r border-gray-300 bg-white z-10">
-              <div>
-                  <motion.span 
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    className="font-mono text-xs uppercase tracking-widest text-gray-500 mb-8 block"
-                  >
-                    Competencias
-                  </motion.span>
-                  <motion.h2 
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1 }}
-                    className="text-brand-blue text-[12vw] lg:text-[7vw] font-bold tracking-tighter leading-[0.85]"
-                  >
-                    Stack<br/>Técnico
-                  </motion.h2>
-              </div>
-              
-              <div className="p-8 border border-brand-blue/10 bg-gray-50/50">
-                  <p className="font-mono text-[10px] uppercase text-gray-400 tracking-widest mb-4">Core Focus</p>
-                  <div className="flex flex-wrap gap-4 text-[10px] font-mono text-brand-blue uppercase">
-                    <span>[PYTHON]</span>
-                    <span>[QUANTITATIVE]</span>
-                    <span>[RESEARCH]</span>
-                  </div>
-              </div>
-            </div>
-
-            <div className="w-full lg:w-1/2">
-              {services.map((service, index) => (
-                <div key={service.id} className="border-b border-gray-300 group">
-                  <button 
-                    onClick={() => setActiveId(activeId === service.id ? null : service.id)}
-                    className="w-full text-left p-8 sm:p-12 flex justify-between items-center bg-white hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-baseline gap-6">
-                      <span className="font-mono text-xs text-gray-300 group-hover:text-brand-blue transition-colors">0{index + 1}</span>
-                      <h3 className={`text-2xl sm:text-3xl font-bold tracking-tight ${activeId === service.id ? 'text-brand-blue' : 'text-gray-900'}`}>
-                        {service.title}
-                      </h3>
+            <nav className={`fixed top-0 w-full z-50 py-4 transition-all duration-500 ${navClasses}`}>
+                <div className="max-w-[1100px] mx-auto flex justify-center items-center px-5">
+                    <ul className="hidden md:flex gap-8">
+                        {['Inicio', 'Proyectos', 'Curriculum', 'Referencias', 'Contacto'].map((item) => {
+                            const href = item === 'Inicio' ? '#home' : `#${item.toLowerCase().replace('referencias', 'testimonials').replace('curriculum', 'cv')}`;
+                            return (
+                                <li key={item}>
+                                    <a 
+                                        href={href} 
+                                        className={`${theme.colors.textSecondary} font-medium text-sm transition-colors hover:opacity-100`}
+                                        style={{ '--hover-color': theme.colors.accent }}
+                                        onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accent}
+                                        onMouseLeave={(e) => e.currentTarget.style.color = ''}
+                                    >
+                                        {item}
+                                    </a>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                    <div className="md:hidden text-sm">
+                        <span className="font-bold" style={{ color: theme.colors.accent }}>GPS</span> <span className={theme.colors.textMain}>Portfolio</span>
                     </div>
-                    <motion.div animate={{ rotate: activeId === service.id ? 45 : 0 }}>
-                      <Plus size={24} className={activeId === service.id ? 'text-brand-blue' : 'text-gray-400'} />
-                    </motion.div>
-                  </button>
-                  
-                  <AnimatePresence>
-                    {activeId === service.id && (
-                      <motion.div 
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden bg-gray-50/30"
-                      >
-                        <div className="px-8 sm:px-12 pb-12">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                              <div className="flex flex-col gap-8">
-                                <p className="font-mono text-sm leading-relaxed text-gray-600 uppercase">
-                                  {service.description}
-                                </p>
-                              </div>
-                              <div className="h-40 overflow-hidden grayscale contrast-125 brightness-110">
-                                <img src={service.image} className="w-full h-full object-cover mix-blend-multiply opacity-70" alt={service.title} />
-                              </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </div>
-              ))}
-              
-              <div className="p-12">
-                <a href="assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf" download className="block text-center bg-brand-blue text-white px-10 py-5 font-mono text-xs uppercase tracking-widest hover:bg-brand-blue-dark transition-all w-full md:w-auto">
-                  Descargar Stack Completo (CV)
-                </a>
-              </div>
-            </div>
-          </section>
+            </nav>
         );
-      };
+    };
 
-      const Process = () => {
-        // Mapped from "Filosofía"
-        const steps = [
-          { id: '01', number: '01', title: 'Curiosidad', description: 'Me mueve el deseo intelectual de entender por qué funcionan los modelos.' },
-          { id: '02', number: '02', title: 'Rigor', description: 'Si entra basura, sale basura. Priorizo la validación estadística robusta.' },
-          { id: '03', number: '03', title: 'Modelado', description: 'Las funciones y la estadística no solo describen el mundo, lo modelan.' },
-          { id: '04', number: '04', title: 'Impacto', description: 'Transformar datos complejos en decisiones financieras y herramientas útiles.' },
-        ];
-
+    const Hero = () => {
+        const { theme } = useTheme();
         return (
-          <section className="bg-white min-h-screen border-t border-gray-300 relative">
-            <div className="flex flex-col lg:flex-row">
-              <div className="lg:w-1/2 lg:h-screen lg:sticky lg:top-0 flex flex-col justify-between p-6 sm:p-12 border-b lg:border-b-0 lg:border-r border-gray-300 z-10 bg-white">
-                <div className="flex justify-between items-start w-full">
-                    <motion.span 
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      className="font-mono text-xs uppercase tracking-widest text-brand-blue"
+            <section id="home" className={`pt-40 pb-20 px-5 text-center border-b ${theme.colors.border} transition-colors duration-500`}>
+                <p style={{ color: theme.colors.accent }} className="text-xl font-semibold mb-6 tracking-wide transition-colors duration-500">
+                    ML / DATA SCIENCE / QUANT
+                </p>
+                <h1 className={`text-5xl md:text-7xl font-bold mb-4 tracking-tight ${theme.colors.textMain} transition-colors duration-500`}>
+                    <span 
+                        style={{ 
+                            backgroundImage: `linear-gradient(to right, ${theme.isDark ? '#fff' : '#111'}, ${theme.colors.accent}, ${theme.colors.accentHover})`
+                        }}
+                        className="text-transparent bg-clip-text bg-[length:200%_auto] animate-[gradient_3s_ease_infinite]"
                     >
-                      Filosofía
-                    </motion.span>
-                    <motion.span 
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      className="font-mono text-xs uppercase tracking-widest text-gray-500"
-                    >
-                      [GPS.2]
-                    </motion.span>
-                </div>
-
-                <div className="flex-grow flex flex-col justify-center">
-                    <div className="overflow-hidden mb-6 sm:mb-8">
-                        <motion.h2 
-                          initial={{ y: "100%" }}
-                          whileInView={{ y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                          className="text-brand-blue text-[14vw] lg:text-[7vw] font-bold tracking-tighter leading-[0.8]"
-                        >
-                          Visión<br/>
-                          Lógica &<br/>
-                          Constante
-                        </motion.h2>
-                    </div>
-                    
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.4, duration: 0.8 }}
-                        className="font-mono text-xs sm:text-sm uppercase tracking-widest text-gray-500 leading-relaxed max-w-sm"
-                    >
-                      Me gusta entender por qué funcionan las cosas y verles el sentido.
-                    </motion.div>
-                </div>
-                <div className="hidden lg:block"></div>
-              </div>
-
-              <div className="lg:w-1/2 bg-white">
-                <div className="flex flex-col">
-                    {steps.map((step) => (
-                      <motion.div 
-                          key={step.id} 
-                          initial={{ opacity: 0, x: 100 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true, margin: "-20%" }}
-                          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                          className="group min-h-[40vh] sm:min-h-[50vh] flex flex-col justify-center p-8 sm:p-16 border-b border-gray-300 hover:brightness-95 transition-all duration-500"
-                      >
-                          <div className="bg-white/0 lg:bg-transparent p-6 lg:p-0 shadow-sm lg:shadow-none border lg:border-none border-gray-100 transition-all duration-300">
-                              <div className="w-full flex items-start justify-between mb-6 sm:mb-8">
-                                <h3 className="text-2xl sm:text-4xl font-medium text-brand-blue max-w-[70%]">
-                                  {step.title}
-                                </h3>
-                                <span className="font-mono text-xl sm:text-2xl text-gray-300 group-hover:text-brand-blue transition-colors duration-300">
-                                  {step.number}
-                                </span>
-                              </div>
-                              <div className="w-full h-px bg-gray-200 mb-6 sm:mb-8 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-out"></div>
-                              <p className="font-mono text-xs sm:text-sm uppercase tracking-widest text-gray-600 leading-relaxed max-w-md">
-                                {step.description}
-                              </p>
-                          </div>
-                      </motion.div>
+                        Gonzalo Pilar Sánchez
+                    </span>
+                </h1>
+                <p className={`max-w-2xl mx-auto mb-8 text-lg leading-relaxed ${theme.colors.textSecondary} transition-colors duration-500`}>
+                    Desarrollador enfocado en Machine Learning, Data Science y Finanzas Cuantitativas. 
+                    Busco transformar datos complejos en decisiones financieras y herramientas útiles, 
+                    priorizando siempre el rigor.
+                </p>
+                <div className="flex justify-center gap-6 text-2xl md:text-3xl mb-10 text-gray-400 transition-colors duration-500">
+                    {['fab fa-python', 'fas fa-database', 'fas fa-chart-line', 'fas fa-brain', 'fas fa-code'].map((iconClass, idx) => (
+                        <i 
+                            key={idx}
+                            className={`${iconClass} hover:-translate-y-1 transition-all duration-300 cursor-pointer`}
+                            onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accent}
+                            onMouseLeave={(e) => e.currentTarget.style.color = ''}
+                        ></i>
                     ))}
                 </div>
-              </div>
-            </div>
-          </section>
-        );
-      };
-
-      const Projects = () => {
-        const containerRef = useRef(null);
-        // Mapped from "Proyectos Destacados"
-        const projects = [
-          { id: '1', title: 'Predicción de Cine', category: 'ML / Small Data', image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop' },
-          { id: '2', title: 'Validación de Alphas', category: 'Quant / Infra', image: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?q=80&w=2070&auto=format&fit=crop' },
-          { id: '3', title: 'Réplica SRDDQN', category: 'Deep RL / Research', image: 'https://images.unsplash.com/photo-1558494949-ef526b0042a0?q=80&w=2072&auto=format&fit=crop' },
-        ];
-
-        return (
-          <section ref={containerRef} className="bg-white border-t border-gray-300 pb-24 overflow-hidden">
-            <div className="py-24 px-4 sm:px-8 border-b border-gray-300 mb-12">
-              <motion.h2 
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-                className="text-brand-blue text-[10vw] font-bold tracking-tighter text-center leading-[0.85]"
-              >
-                Proyectos<br/>Destacados
-              </motion.h2>
-            </div>
-
-            <div className="container mx-auto px-4 sm:px-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {projects.map((project, index) => {
-                  return (
-                    <motion.div 
-                      key={project.id} 
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: index * 0.1 }}
-                      className="group relative h-[60vh] md:h-[70vh] flex flex-col cursor-pointer overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-500"
+                <div className="flex flex-col sm:flex-row justify-center gap-5 flex-wrap">
+                    <a 
+                        href="#projects" 
+                        style={{ backgroundColor: theme.colors.accent, boxShadow: `0 4px 15px ${theme.colors.accent}66` }}
+                        className="px-8 py-3 rounded-full text-white font-semibold hover:-translate-y-0.5 transition-all hover:brightness-110"
                     >
-                      <div className="p-4 flex justify-between items-center font-mono text-[10px] uppercase tracking-widest text-brand-blue bg-white relative z-20 border-b border-gray-100">
-                        <span>0{index + 1}</span>
-                        <span>{project.category}</span>
-                      </div>
-                      <div className="flex-grow relative overflow-hidden bg-brand-blue">
-                        <div className="absolute inset-0 bg-brand-blue z-0"></div>
-                        <motion.img 
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ duration: 0.7, ease: "easeOut" }}
-                          src={project.image} 
-                          alt={project.title}
-                          className="relative z-10 w-full h-full object-cover grayscale mix-blend-multiply opacity-60 group-hover:opacity-40 transition-opacity duration-500"
-                        />
-                        <div className="absolute inset-0 z-20 opacity-30 pointer-events-none" 
-                            style={{
-                              backgroundImage: 'radial-gradient(#E8E6E0 1px, transparent 0)',
-                              backgroundSize: '3px 3px'
-                            }}
-                        ></div>
-                        <div className="absolute bottom-8 left-8 z-30 overflow-hidden pr-4">
-                          <h3 className="text-3xl font-bold text-white drop-shadow-md translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out leading-tight">
-                            {project.title}
-                          </h3>
+                        Ver Proyectos
+                    </a>
+                    <a 
+                        href="assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf" 
+                        download 
+                        style={{ borderColor: theme.colors.accent, color: theme.colors.accent }}
+                        className="px-8 py-3 rounded-full border-2 font-semibold hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                    >
+                        <i className="fas fa-file-download"></i> Descargar CV
+                    </a>
+                    <a 
+                        href="assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        style={{ borderColor: theme.colors.accent, color: theme.colors.accent }}
+                        className="px-8 py-3 rounded-full border-2 font-semibold hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                    >
+                        <i className="fas fa-eye"></i> Visualizar CV
+                    </a>
+                </div>
+            </section>
+        );
+    };
+
+    const Philosophy = () => {
+        const { theme } = useTheme();
+        return (
+            <section className={`py-20 border-b ${theme.colors.border} transition-colors duration-500`}>
+                <div className={`max-w-3xl mx-auto text-center ${theme.colors.surface} border ${theme.colors.border} rounded-2xl p-8 shadow-sm transition-colors duration-500`}>
+                    <h3 className={`text-2xl font-bold mb-4 ${theme.colors.textMain}`}>Mi filosofía</h3>
+                    <p className={`${theme.colors.textSecondary} leading-relaxed`}>
+                        Me mueve la curiosidad intelectual y el deseo de entender cómo funcionan realmente los modelos. Creo de forma firme que como decía Thomas Garrity "Las funciones describen el mundo", pero con un giro, creo que "Las funciones y la estadística <em>modelan</em> el mundo". Me gusta entender <em>por qué</em> funcionan los modelos y verles el sentido. Me considero una persona constante y risueña, con vocación para explicar conceptos complejos y trabajar en equipo.
+                    </p>
+                </div>
+            </section>
+        );
+    };
+
+    const projectsData = [
+        {
+            id: 'proj-1',
+            category: 'Machine Learning / Small Data',
+            title: 'Predicción de Afinidad Cinematográfica',
+            tags: ['Python', 'APIs', 'AutoML', 'Feature Engineering'],
+            originTitle: 'El Origen',
+            teaser: 'Todo empezó con una web llamada Palomitacas...',
+            content: (
+                <React.Fragment>
+                    <p>Hace años empecé a usar una web llamada Palomitacas. La elegí porque tenía una función que me encantaba: me decía qué nota le daría yo a una película antes de verla. Un día, esa función desapareció sin explicación. En aquel entonces, yo estaba empezando en el análisis de datos y ML, así que intenté replicarla por mi cuenta. Fracasé estrepitosamente y lo dejé aparcado.</p>
+                    <p>Hace unos meses decidí retomar ese reto personal para ver cuánto había mejorado. Sabía que mi base de datos era ínfima y que extraer señal de ahí sería como intentar 'matar moscas a cañonazos', pero me daba igual: quería exprimir cada dato y ver hasta dónde podía llegar. No buscaba un modelo perfecto ni métricas de libro, buscaba una herramienta que me guiase.</p>
+                    <p>El resultado es un proyecto de Machine Learning en Python que integra APIs, técnicas de AutoML y modelos personalizados. Es una solución humilde, pero que funciona y cumple su objetivo. Espero volver a este dataset en el futuro con más conocimientos y ver cómo siguen evolucionando las métricas.</p>
+                </React.Fragment>
+            ),
+            techSheet: {
+                problem: 'Dataset personal muy pequeño y ruidoso (Small Data). Necesidad de predecir gustos subjetivos.',
+                solution: 'Pipeline de enriquecimiento con OMDb API e ingeniería de características personalizada (Positional Multi-Label Encoder).',
+                result: 'Modelo funcional robusto a diferentes semillas. Creación de métrica personalizada de estabilidad.'
+            },
+            githubUrl: 'https://github.com/goco41/ML-DS-para-Peliculas'
+        },
+        {
+            id: 'proj-2',
+            category: 'Finanzas Cuantitativas / Infraestructura',
+            title: 'Validación de Alphas en Trading',
+            tags: ['Numba', 'Backtesting Riguroso', 'CPCV', 'Estadística'],
+            originTitle: 'El Origen',
+            teaser: 'Un icono de MetaTrader lo cambió todo...',
+            content: (
+                <React.Fragment>
+                    <p>Prácticamente desde que empecé con Python, sabía que quería aplicarlo a las finanzas y los datos, pero era consciente de su complejidad. Por ello, decidí posponerlo para centrarme en mis estudios y la Selectividad. Todo cambió un día charlando con mi Jefe de Estudios; vi en su ordenador el icono de MetaTrader 5 y no pude evitar preguntar. Me explicó que tenía una estrategia automatizada para el EURUSD, pero que le había costado años desarrollarla y no pensaba desvelar su 'secreto' a nadie.</p>
+                    <p>Ese día volví a casa con un reto personal: yo también quería construir algo así. Él era alguien con carrera, máster y años de experiencia, pero aun así acepté el desafío. Pasé tardes, días y semanas enteras experimentando con Python, intercalando mis estudios con la búsqueda de esa idea ganadora y otros proyectos con python. Fracasé una y otra vez. Cada vez que creía tener algo que funcionaba, descubría rastros de data leakage o contaminación de datos. En cuanto corregía el error, la rentabilidad se esfumaba.</p>
+                    <p>Tras muchos intentos, dejé de intentar ignorar la dura realidad: me faltaban Alphas (señales predictivas reales). Sabía que 'si entra basura, sale basura'. Por eso, con la estadística en la mano, decidí centrarme en construir el pipeline que me ayudaría en el proceso.</p>
+                    <p>Emprendí este proyecto sabiendo que los indicadores convencionales están muy explotados y que las probabilidades de éxito inmediato eran bajas. Sin embargo, el resultado fue un éxito en lo que realmente importa: he creado una infraestructura robusta para testear ideas con rigor científico y separar, por fin, la suerte de la verdadera ventaja estadística. Ahora no solo tengo código; tengo un método sólido para validar cualquier Alpha que surja en el futuro.</p>
+                </React.Fragment>
+            ),
+            techSheet: {
+                problem: 'Alto riesgo de overfitting (p-hacking) al minar estrategias de trading.',
+                solution: 'Implementación de validación cruzada combinatoria (CPCV) y ajuste estadístico (Deflated Sharpe Ratio) usando Numba para alto rendimiento.',
+                result: 'Infraestructura capaz de rechazar estrategias falsas positivas y validar Alphas con rigor científico.'
+            },
+            githubUrl: 'https://github.com/goco41/ind-4-alphas/tree/main'
+        },
+        {
+            id: 'proj-3',
+            category: 'Deep Reinforcement Learning / Research',
+            title: 'Réplica Crítica: SRDDQN + TimesNet',
+            tags: ['PyTorch', 'Computer Vision', 'Research Reproduction'],
+            originTitle: 'El Origen',
+            teaser: '¿Por qué reinventar la rueda?',
+            content: (
+                <React.Fragment>
+                    <p>Tras dedicar mucho tiempo a intentar diseñar un sistema propio que fuese robusto, llegué a una conclusión lógica: existen investigadores y mentes brillantes que ya han publicado soluciones avanzadas. ¿Por qué no apoyarme en su experiencia? Así fue como, tras una búsqueda intensiva de literatura técnica, descubrí el paper SRDDQN.</p>
+                    <p>Lo que me cautivó de este estudio fue el uso de TimesNet. Me pareció fascinante encontrar una arquitectura que tratase las series temporales como imágenes mediante la Transformada de Fourier, que es, casualmente, uno de mis conceptos matemáticos favoritos. La posibilidad de aplicar visión por computador al análisis financiero, sumada a un mecanismo de auto-recompensa dinámica (donde la IA decide cómo premiar su propio aprendizaje), me motivó a implementar el proyecto por completo.</p>
+                    <p>El proceso fue exigente: desde el diseño de diagramas de flujo hasta la reconstrucción de los gráficos de rendimiento. Sin embargo, la réplica también me aportó una lección valiosa sobre el rigor en la investigación. El paper original reportaba rentabilidades y Ratios de Sharpe extraordinarios que, en mi implementación, no se alcanzaron.</p>
+                    <p>Al analizar las causas, identifiqué factores críticos: el paper utiliza un split simple de train y test, lo que facilita un sobreajuste (overfitting) a este último. Además, con casi total seguridad, el estudio omite el impacto del spread entre Bid y Ask. En mi réplica, al ser más estricto con los costes reales de ejecución, los resultados fueron más humildes, pero también más honestos y cercanos a la realidad del mercado. A pesar de la discrepancia en las métricas, este proyecto ha sido una de las experiencias de aprendizaje más enriquecedoras que he tenido.</p>
+                </React.Fragment>
+            ),
+            techSheet: {
+                problem: 'Reproducibilidad de papers académicos y adaptación a entornos de mercado realistas.',
+                solution: 'Implementación de TimesNet (Visión 2D de series temporales) y un agente de RL híbrido con simulación de costes reales.',
+                result: 'Réplica crítica que desveló sesgos en el estudio original y propuso un modelo más realista.'
+            },
+            githubUrl: 'https://github.com/goco41/SRDDQN4tr'
+        }
+    ];
+
+    const Projects = () => {
+        const [openProjectId, setOpenProjectId] = useState(null);
+        const { theme } = useTheme();
+
+        const toggleProject = (id) => {
+            setOpenProjectId(prev => (prev === id ? null : id));
+        };
+
+        return (
+            <section id="projects" className={`py-20 border-b ${theme.colors.border} transition-colors duration-500`}>
+                <div className="relative mb-12 text-center">
+                    <h2 className={`text-3xl md:text-4xl ${theme.colors.textMain} font-bold inline-block relative`}>
+                        Proyectos Destacados
+                        <span 
+                            className="block w-16 h-1 mx-auto mt-3 rounded" 
+                            style={{ backgroundColor: theme.colors.accent }}
+                        ></span>
+                    </h2>
+                </div>
+                {projectsData.map((project) => {
+                    const isOpen = openProjectId === project.id;
+                    const cardStyle = isOpen ? {
+                        borderColor: `${theme.colors.accent}80`,
+                        boxShadow: `0 10px 30px ${theme.colors.accent}26`,
+                    } : {};
+                    const cardClasses = isOpen
+                        ? `${theme.colors.surface}`
+                        : `${theme.colors.surface} ${theme.colors.border} hover:shadow-lg`;
+
+                    const leftColClasses = isOpen ? 'md:w-[58%] delay-0' : 'md:w-full delay-500';
+                    const rightColClasses = isOpen ? 'md:w-[38%] mt-0 delay-0 opacity-100' : 'md:w-full mt-2 delay-500 opacity-100';
+                    const textContentClasses = isOpen ? 'max-h-[1200px] opacity-100 mt-5 delay-500' : 'max-h-0 opacity-0 delay-0';
+                    const chevronClasses = isOpen ? 'rotate-180' : '';
+
+                    return (
+                        <div key={project.id} className={`border rounded-2xl p-6 md:p-10 mb-16 transition-all duration-300 ${cardClasses}`} style={cardStyle}>
+                            <div className={`border-b ${theme.colors.border} pb-5 mb-5`}>
+                                <span className="text-sm font-bold uppercase tracking-widest block mb-2" style={{ color: theme.colors.accent }}>{project.category}</span>
+                                <h3 className={`text-2xl md:text-3xl ${theme.colors.textMain} font-bold mb-3`}>{project.title}</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {project.tags.map(tag => (
+                                        <span key={tag} className="text-xs md:text-sm px-3 py-1 rounded border" style={{ backgroundColor: `${theme.colors.accent}1A`, color: theme.colors.accent, borderColor: `${theme.colors.accent}33` }}>{tag}</span>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex flex-col md:flex-row flex-wrap md:justify-between items-start gap-y-8 md:gap-y-0">
+                                <div className={`flex flex-col w-full transition-[width] duration-500 ease-in-out ${leftColClasses}`}>
+                                    <h4 className={`${theme.colors.textMain} text-lg mb-5 flex items-center gap-2 border-l-4 pl-3 font-semibold`} style={{ borderColor: theme.colors.accent }}>
+                                        <i className={`fas fa-book-open ${theme.colors.textSecondary}`}></i> {project.originTitle}
+                                    </h4>
+                                    <div onClick={() => toggleProject(project.id)} className="cursor-pointer font-semibold flex items-center gap-2 transition-colors group" style={{ color: theme.colors.accent }}>
+                                        <span className={`${theme.colors.textSecondary} group-hover:${theme.colors.textMain} text-base md:text-lg transition-colors`}>{project.teaser}</span>
+                                        <i className={`fas fa-chevron-down transition-transform duration-500 ${chevronClasses}`}></i>
+                                    </div>
+                                    <div className={`overflow-hidden transition-all duration-500 ease-in-out ${textContentClasses}`}>
+                                        <div className={`${theme.colors.textSecondary} text-justify text-base leading-relaxed space-y-4 pt-5`}>{project.content}</div>
+                                    </div>
+                                </div>
+                                <div className={`w-full transition-[width,margin,opacity] duration-500 ease-in-out ${rightColClasses}`}>
+                                    <div className={`w-full pt-6 border-t ${theme.colors.border} md:pt-0 md:border-t-0`}>
+                                        <h4 className={`${theme.colors.textMain} text-lg mb-5 flex items-center gap-2 border-l-4 pl-3 font-semibold`} style={{ borderColor: theme.colors.accent }}>
+                                            <i className={`fas fa-microchip ${theme.colors.textSecondary}`}></i> Ficha Técnica
+                                        </h4>
+                                        <ul className="space-y-4">
+                                            <li className={`grid grid-cols-[25px_1fr] ${theme.colors.textSecondary} text-sm md:text-base`}><i className="fas fa-exclamation-circle text-amber-500 mt-1.5"></i><div><span className={`${theme.colors.textMain} font-bold block`}>Problema:</span>{project.techSheet.problem}</div></li>
+                                            <li className={`grid grid-cols-[25px_1fr] ${theme.colors.textSecondary} text-sm md:text-base`}><i className="fas fa-tools mt-1.5" style={{ color: theme.colors.accent }}></i><div><span className={`${theme.colors.textMain} font-bold block`}>Solución:</span>{project.techSheet.solution}</div></li>
+                                            <li className={`grid grid-cols-[25px_1fr] ${theme.colors.textSecondary} text-sm md:text-base`}><i className="fas fa-check-circle text-emerald-500 mt-1.5"></i><div><span className={`${theme.colors.textMain} font-bold block`}>Resultado:</span>{project.techSheet.result}</div></li>
+                                        </ul>
+                                        <a href={project.githubUrl} target="_blank" rel="noreferrer" className="mt-6 inline-block px-5 py-2 border-2 text-sm rounded-full hover:bg-white/5 transition-colors font-semibold" style={{ borderColor: theme.colors.accent, color: theme.colors.accent }}>Ver en GitHub</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                      <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 translate-y-1/2 z-40 hidden md:block opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <button className="bg-white text-brand-blue px-8 py-4 font-mono text-xs uppercase tracking-widest hover:bg-brand-gray transition-colors border border-brand-blue whitespace-nowrap">
-                            Ver Detalles
-                          </button>
-                      </div>
-                    </motion.div>
-                  );
+                    );
                 })}
-              </div>
-            </div>
-          </section>
+            </section>
         );
-      };
+    };
 
-      const Education = () => {
-        const [index, setIndex] = useState(0);
-        // Mapped from "Formación Académica" y "Certificaciones"
-        const testimonials = [
-          {
-            id: 1,
-            quote: "Grado en Análisis Económico. Universidad Pablo de Olavide (UPO). Delegado de clase y miembro activo del club de debate.",
-            author: "Formación Universitaria",
-            company: "2025 – 2029 (En curso)"
-          },
-          {
-            id: 2,
-            quote: "Deep Learning Specialization. Certificación oficial de DeepLearning.AI completada con éxito.",
-            author: "Certificación Técnica",
-            company: "DeepLearning.AI"
-          },
-          {
-            id: 3,
-            quote: "Machine Learning Specialization. Programa impartido por Stanford University a través de Coursera.",
-            author: "Certificación Técnica",
-            company: "Stanford University"
-          }
-        ];
-
-        const next = () => setIndex((prev) => (prev + 1) % testimonials.length);
-        const prev = () => setIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-
+    const CV = () => {
+        const { theme } = useTheme();
         return (
-          <section className="bg-white py-24 sm:py-40 border-b border-gray-300 overflow-hidden">
-            <div className="container mx-auto px-4 sm:px-8">
-              <div className="flex flex-col gap-12">
-                  <div className="flex justify-between items-end border-b border-gray-100 pb-8">
-                    <div className="flex items-center gap-6">
-                        <span className="font-mono text-xs uppercase tracking-widest text-brand-blue font-bold">Educación & Certificaciones</span>
-                        <span className="font-mono text-[10px] uppercase text-gray-300">[GPS.3]</span>
-                    </div>
-                    <div className="font-mono text-xs font-bold text-brand-blue">
-                      0{index + 1} / 0{testimonials.length}
-                    </div>
-                  </div>
-
-                  <div className="min-h-[300px] flex items-center">
-                    <AnimatePresence mode="wait">
-                      <motion.div 
-                          key={index}
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -20 }}
-                          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                          className="w-full"
-                      >
-                        <blockquote className="text-3xl sm:text-5xl md:text-6xl font-bold text-brand-blue tracking-tighter leading-[0.9] mb-12">
-                          "{testimonials[index].quote}"
-                        </blockquote>
-
-                        <div className="flex flex-col gap-1">
-                            <span className="font-mono text-sm font-bold uppercase tracking-widest">{testimonials[index].author}</span>
-                            <span className="font-mono text-xs text-gray-400 uppercase tracking-widest">{testimonials[index].company}</span>
-                        </div>
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
-
-                  <div className="flex gap-4 pt-8">
-                    <button onClick={prev} className="w-14 h-14 border border-gray-300 rounded-full flex items-center justify-center hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-all">
-                        <ArrowLeft size={20} />
-                    </button>
-                    <button onClick={next} className="w-14 h-14 border border-gray-300 rounded-full flex items-center justify-center hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-all">
-                        <ArrowRight size={20} />
-                    </button>
-                  </div>
-
-              </div>
-            </div>
-          </section>
-        );
-      };
-
-      const News = () => {
-        // Mapped from GitHub Links and CV download
-        const news = [
-          { 
-            id: '1', 
-            date: 'CV', 
-            category: 'PDF Download', 
-            title: 'Descargar Curriculum Vitae Completo', 
-            isFeatured: true, 
-            image: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=2070&auto=format&fit=crop',
-            link: 'assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf'
-          },
-          { 
-            id: '2', 
-            date: 'REPO', 
-            category: 'Machine Learning', 
-            title: 'Predicción de Afinidad Cinematográfica (GitHub)',
-            link: 'https://github.com/goco41/ML-DS-para-Peliculas'
-          },
-          { 
-            id: '3', 
-            date: 'REPO', 
-            category: 'Quant Finance', 
-            title: 'Infraestructura de Validación de Alphas (GitHub)',
-            link: 'https://github.com/goco41/ind-4-alphas/tree/main'
-          },
-          { 
-            id: '4', 
-            date: 'REPO', 
-            category: 'Deep RL', 
-            title: 'Réplica SRDDQN + TimesNet (GitHub)',
-            link: 'https://github.com/goco41/SRDDQN4tr'
-          },
-          { 
-            id: '5', 
-            date: 'CERT', 
-            category: 'Financial Markets', 
-            title: 'Yale University - Financial Markets (Coursera)',
-            link: '#'
-          },
-        ];
-        
-        const featured = news[0];
-        const others = news.slice(1, 5);
-
-        return (
-          <section className="bg-white border-b border-gray-300 overflow-hidden">
-            <div className="flex justify-between items-center p-6 sm:px-12 border-b border-gray-300 bg-white">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-gray-500">Recursos & Enlaces</span>
-              <a href="https://github.com/goco41" className="font-mono text-[10px] uppercase tracking-widest text-brand-blue hover:underline flex items-center group font-bold">
-                [ Perfil de GitHub ] <ArrowRight size={12} className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </a>
-            </div>
-
-            <div className="flex flex-col lg:flex-row lg:h-[600px] w-full bg-white">
-              <div className="lg:w-1/2 relative h-[400px] lg:h-full border-b lg:border-b-0 lg:border-r border-gray-300 overflow-hidden group cursor-pointer">
-                <a href={featured.link} className="block w-full h-full">
-                  <img src={featured.image} className="absolute inset-0 w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105" alt="CV" />
-                  <div className="absolute inset-0 bg-brand-blue/80 mix-blend-multiply group-hover:bg-brand-blue/40 transition-colors"></div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand-blue via-transparent to-transparent opacity-60"></div>
-                  
-                  <div className="absolute top-8 left-10">
-                      <span className="text-7xl font-bold text-white drop-shadow-md">{featured.date}</span>
-                  </div>
-                  
-                  <div className="absolute bottom-10 left-10 right-10">
-                      <span className="font-mono text-[10px] uppercase tracking-widest text-white/70 font-bold block mb-3">[{featured.category}]</span>
-                      <h3 className="text-3xl sm:text-4xl font-bold text-white leading-tight tracking-tighter">
-                        {featured.title}
-                      </h3>
-                  </div>
-                </a>
-              </div>
-
-              <div className="lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 lg:grid-rows-2 h-auto lg:h-full">
-                {others.map((item, index) => (
-                  <a 
-                    href={item.link}
-                    key={item.id} 
-                    className={`group relative h-72 lg:h-full overflow-hidden cursor-pointer transition-colors duration-300 bg-white border-gray-200 block
-                      hover:bg-brand-blue
-                      ${index % 2 === 0 ? 'sm:border-r border-b' : 'border-b'} 
-                      ${index >= 2 ? 'lg:border-b-0' : ''}`}
-                  >
-                      <div className="relative z-10 p-8 flex flex-col h-full justify-between">
-                        <div className="flex justify-between items-start">
-                          <span className="text-5xl font-bold text-brand-blue group-hover:text-white transition-colors">
-                            {item.date}
-                          </span>
-                          <div className="text-brand-blue group-hover:text-white transition-colors">
-                              <ArrowRight size={20} className="transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <span className="font-mono text-[9px] uppercase text-gray-400 group-hover:text-white/60 block mb-2 font-bold tracking-widest transition-colors">
-                            [{item.category}]
-                          </span>
-                          <h4 className="text-lg font-bold text-brand-blue group-hover:text-white leading-tight tracking-tight transition-colors">
-                            {item.title}
-                          </h4>
-                        </div>
-                      </div>
-
-                      <div className="absolute bottom-0 left-0 w-0 h-1 bg-white group-hover:w-full transition-all duration-500"></div>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </section>
-        );
-      };
-
-      const Footer = () => {
-        return (
-          <footer className="bg-brand-blue text-white py-16 sm:py-24 relative overflow-hidden">
-            <div className="absolute bottom-[-100px] left-[-100px] w-[500px] h-[500px] border-[1px] border-white/10 rounded-full pointer-events-none"></div>
-            <div className="absolute bottom-0 right-12 opacity-5 font-mono text-[20vw] font-bold select-none uppercase tracking-tighter">GPS</div>
-
-            <div className="container mx-auto px-4 sm:px-8 relative z-10">
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-24">
-                <div className="md:col-span-6 grid grid-cols-2 gap-8">
-                    <div className="flex flex-col gap-3 font-mono text-[10px] uppercase tracking-[0.2em] font-bold">
-                      <a href="#" className="hover:text-white/60 transition-colors">Inicio</a>
-                      <a href="#" className="hover:text-white/60 transition-colors">Filosofía</a>
-                      <a href="#" className="hover:text-white/60 transition-colors">Proyectos</a>
-                      <a href="#" className="hover:text-white/60 transition-colors">CV</a>
-                    </div>
-                    <div className="flex flex-col gap-3 font-mono text-[10px] uppercase tracking-[0.2em] font-bold">
-                      <a href="https://github.com/goco41" className="hover:text-white/60 transition-colors">GitHub</a>
-                      <a href="#" className="hover:text-white/60 transition-colors">LinkedIn</a>
-                      <a href="mailto:gonzalopilar2005@gmail.com" className="hover:text-white/60 transition-colors">Email</a>
-                    </div>
+            <section id="cv" className={`py-20 border-b ${theme.colors.border} transition-colors duration-500`}>
+                <div className="relative mb-12 text-center">
+                    <h2 className={`text-3xl md:text-4xl ${theme.colors.textMain} font-bold inline-block relative`}>
+                        Curriculum Vitae
+                        <span className="block w-16 h-1 mx-auto mt-3 rounded" style={{ backgroundColor: theme.colors.accent }}></span>
+                    </h2>
                 </div>
-
-                <div className="md:col-span-3 flex flex-col gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-white/40 mb-2">Ubicación</p>
-                      <address className="not-italic font-mono text-xs uppercase leading-relaxed tracking-wider">
-                          Sevilla<br/>
-                          España
-                      </address>
+                        <h3 className={`text-2xl ${theme.colors.textMain} font-bold mb-8`}>Formación Académica</h3>
+                        <div className={`${theme.colors.surface} border ${theme.colors.border} rounded-2xl p-8 mb-6 shadow-sm transition-colors duration-500`}>
+                            <div className={`border-l-2 ${theme.colors.border} pl-5`}>
+                                <span className="font-bold text-sm block mb-1" style={{ color: theme.colors.accent }}>2025 – 2029 (En curso)</span>
+                                <div className={`${theme.colors.textMain} text-lg font-bold mb-1`}>Grado en Análisis Económico</div>
+                                <div className={`${theme.colors.textSecondary} text-sm`}>Universidad Pablo de Olavide (UPO)</div>
+                                <ul className={`list-disc pl-4 mt-3 ${theme.colors.textSecondary} text-xs md:text-sm space-y-1`}>
+                                    <li>Estudiante de 1º Curso</li>
+                                    <li>Delegado de clase (2025-2026)</li>
+                                    <li>Miembro activo del club de debate</li>
+                                </ul>
+                                <p className={`${theme.colors.textSecondary} text-xs md:text-sm mt-4 italic leading-relaxed border-t ${theme.colors.border} pt-3`}>
+                                    He complementado mi formación con aprendizaje autodidacta en Python, Machine Learning y finanzas cuantitativas, aplicándolo en proyectos reales.
+                                </p>
+                            </div>
+                        </div>
+                        <h3 className={`text-2xl ${theme.colors.textMain} font-bold mb-8 mt-12`}>Idiomas</h3>
+                        <div className={`${theme.colors.surface} border ${theme.colors.border} rounded-2xl p-8 shadow-sm transition-colors duration-500`}>
+                            <ul className={`space-y-3 ${theme.colors.textSecondary}`}>
+                                <li className="flex items-center gap-3"><i className="fas fa-language" style={{ color: theme.colors.accent }}></i><span><strong>Inglés B2</strong> (Certificado EOI)</span></li>
+                                <li className="flex items-center gap-3"><i className="fas fa-language" style={{ color: theme.colors.accent }}></i><span><strong>Español</strong> (Nativo)</span></li>
+                            </ul>
+                        </div>
                     </div>
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-white/40 mb-2">Contacto</p>
-                      <a href="mailto:gonzalopilar2005@gmail.com" className="font-mono text-xs lowercase tracking-wider hover:underline">gonzalopilar2005@gmail.com</a>
+                        <h3 className={`text-2xl ${theme.colors.textMain} font-bold mb-8`}>Stack Tecnológico</h3>
+                        <div className={`${theme.colors.surface} border ${theme.colors.border} rounded-2xl p-8 mb-8 shadow-sm transition-colors duration-500`}>
+                            <div className="mb-6">
+                                <h4 className="font-bold text-sm mb-3" style={{ color: theme.colors.accent }}>Lenguaje & Librerías</h4>
+                                <div className="flex flex-wrap gap-3">
+                                    {['Python (Avanzado)', 'Pandas / NumPy', 'Scikit-learn', 'PyTorch', 'Numba'].map(tech => (
+                                        <span key={tech} className={`${theme.isDark ? 'bg-white/5' : 'bg-gray-100'} border ${theme.colors.border} px-4 py-2 rounded-full text-sm ${theme.colors.textSecondary}`}>{tech}</span>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="mb-6">
+                                <h4 className="font-bold text-sm mb-3" style={{ color: theme.colors.accent }}>Data Science & ML</h4>
+                                <div className="flex flex-wrap gap-3">
+                                    {['Feature Engineering', 'Series Temporales', 'AutoML', 'Deep Reinforcement Learning'].map(tech => (
+                                        <span key={tech} className={`${theme.isDark ? 'bg-white/5' : 'bg-gray-100'} border ${theme.colors.border} px-4 py-2 rounded-full text-sm ${theme.colors.textSecondary}`}>{tech}</span>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-sm mb-3" style={{ color: theme.colors.accent }}>Estadística & Validación</h4>
+                                <div className="flex flex-wrap gap-3">
+                                    {['Backtesting Riguroso', 'Estadística Inferencial', 'Validación Estadística'].map(tech => (
+                                        <span key={tech} className={`${theme.isDark ? 'bg-white/5' : 'bg-gray-100'} border ${theme.colors.border} px-4 py-2 rounded-full text-sm ${theme.colors.textSecondary}`}>{tech}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <h3 className={`text-2xl ${theme.colors.textMain} font-bold mb-8 mt-12`}>Certificaciones</h3>
+                        <div className={`${theme.colors.surface} border ${theme.colors.border} rounded-2xl p-8 space-y-6 shadow-sm transition-colors duration-500`}>
+                            <div className={`border-l-2 ${theme.colors.border} pl-5`}><span className="font-bold text-sm block mb-1" style={{ color: theme.colors.accent }}>DeepLearning.AI</span><div className={`${theme.colors.textMain} text-lg font-bold mb-1`}>Deep Learning Specialization</div><a href="https://www.coursera.org/account/accomplishments/specialization/7ND7TBWJMWN6" target="_blank" rel="noreferrer" className="text-sm hover:underline" style={{ color: theme.colors.accent }}>Ver Credencial</a></div>
+                            <div className={`border-l-2 ${theme.colors.border} pl-5`}><span className="font-bold text-sm block mb-1" style={{ color: theme.colors.accent }}>Stanford University</span><div className={`${theme.colors.textMain} text-lg font-bold mb-1`}>Machine Learning Specialization</div><a href="https://www.coursera.org/account/accomplishments/specialization/EHJNK64CH2KH" target="_blank" rel="noreferrer" className="text-sm hover:underline" style={{ color: theme.colors.accent }}>Ver Credencial</a></div>
+                            <div className={`border-l-2 ${theme.colors.border} pl-5`}><span className="font-bold text-sm block mb-1" style={{ color: theme.colors.accent }}>Yale University</span><div className={`${theme.colors.textMain} text-lg font-bold mb-1`}>Financial Markets</div><a href="https://www.coursera.org/account/accomplishments/verify/GXI9YC44R2E2" target="_blank" rel="noreferrer" className="text-sm hover:underline" style={{ color: theme.colors.accent }}>Ver Credencial</a></div>
+                        </div>
                     </div>
                 </div>
-
-                <div className="md:col-span-3">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-white/40 mb-4">Conectar</p>
-                    <div className="flex gap-4 mt-8">
-                      <a href="https://github.com/goco41" className="hover:text-white/60"><Github size={18} /></a>
-                      <a href="#" className="hover:text-white/60"><Linkedin size={18} /></a>
-                      <a href="mailto:gonzalopilar2005@gmail.com" className="hover:text-white/60"><Mail size={18} /></a>
-                    </div>
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-5 mt-12">
+                    <a href="assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf" download className="inline-flex items-center justify-center gap-2 px-8 py-3 text-white font-semibold rounded-full shadow-lg transition-transform hover:-translate-y-1 w-full sm:w-auto" style={{ backgroundColor: theme.colors.accent }}><i className="fas fa-file-pdf"></i> Descargar Curriculum</a>
+                    <a href="assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-8 py-3 border-2 font-semibold rounded-full hover:bg-white/10 transition-transform hover:-translate-y-1 w-full sm:w-auto" style={{ borderColor: theme.colors.accent, color: theme.colors.accent }}><i className="fas fa-eye"></i> Visualizar Curriculum</a>
                 </div>
-              </div>
-
-              <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-white/40">© 2026 Gonzalo Pilar Sánchez.</span>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-white/40">Portfolio V2</span>
-              </div>
-            </div>
-          </footer>
+            </section>
         );
-      };
+    };
 
-      const App = () => {
+    const Footer = () => {
+        const { theme } = useTheme();
         return (
-          <div className="min-h-screen bg-white text-gray-900 font-sans selection:bg-brand-blue selection:text-white">
-            <Header />
-            <main>
-              <Hero />
-              <Intro />
-              <Services />
-              <Process />
-              <Projects />
-              <Education />
-              <News />
-            </main>
-            <Footer />
-          </div>
+            <footer id="contact" className={`py-16 ${theme.colors.footerBg} text-center border-t border-white/5 transition-colors duration-500`}>
+                <div className="flex justify-center gap-8 text-2xl text-white mb-8">
+                    <a href="mailto:gonzalopilar2005@gmail.com" className="transition-colors" style={{ color: 'white' }} onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accent} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}><i className="fas fa-envelope"></i></a>
+                    <a href="https://github.com/goco41" target="_blank" rel="noreferrer" className="transition-colors" style={{ color: 'white' }} onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accent} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}><i className="fab fa-github"></i></a>
+                    <a href="#" className="transition-colors" style={{ color: 'white' }} onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accent} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}><i className="fab fa-linkedin"></i></a>
+                </div>
+                <p className="text-gray-300 text-lg mb-2">gonzalopilar2005@gmail.com</p>
+                <p className="text-gray-500 text-sm">Gonzalo Pilar Sánchez &copy; 2026 | Sevilla, España</p>
+            </footer>
         );
-      };
+    };
 
-      const root = createRoot(document.getElementById('root'));
-      root.render(
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
-      );
-    </script>
-  </body>
+    const App = () => {
+        return (
+            <ThemeProvider>
+                <ThemeSwitcher />
+                <Navbar />
+                <main className="max-w-[1100px] mx-auto px-5">
+                    <Hero />
+                    <Philosophy />
+                    <Projects />
+                    <CV />
+                </main>
+                <Footer />
+            </ThemeProvider>
+        );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+</script>
+</body>
 </html>
