@@ -1,556 +1,543 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
-<head>
+<html lang="es">
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gonzalo Pilar Sánchez | Portfolio ML & Data Science</title>
-code
-Code
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
+    <title>Gonzalo Pilar Sánchez | Portfolio ML & Economics</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<!-- React & Babel -->
-<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-<style>
-    body {
-        font-family: 'Inter', sans-serif;
-        transition: background 0.5s ease, color 0.5s ease;
-    }
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Poppins', sans-serif;
-    }
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-        background: rgba(0,0,0,0.05);
-    }
-    ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #666;
-    }
-</style>
-<script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4"
-  }
-}
-</script>
-</head>
-<body>
-    <div id="root"></div>
-code
-Code
-<script type="text/babel">
-    const { useState, useEffect, createContext, useContext } = React;
-
-    // --- THEME CONFIGURATION ---
-    const themes = {
-        'dark-purple': {
-            name: 'dark-purple',
-            isDark: true,
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
             colors: {
-                background: 'radial-gradient(circle at 50% 10%, #1a1c4b 0%, #0b0c26 60%)',
-                accent: '#7c4dff',
-                accentHover: '#6200ea',
-                textMain: 'text-white',
-                textSecondary: 'text-gray-400',
-                surface: 'bg-white/[0.03]',
-                border: 'border-white/10',
-                navbarScrolled: 'bg-[#0b0c26]/85',
-                footerBg: 'bg-[#08091f]'
-            }
-        },
-        'dark-blue': {
-            name: 'dark-blue',
-            isDark: true,
-            colors: {
-                background: 'radial-gradient(circle at 50% 10%, #1e3a8a 0%, #0f172a 60%)',
-                accent: '#3b82f6',
-                accentHover: '#2563eb',
-                textMain: 'text-white',
-                textSecondary: 'text-slate-400',
-                surface: 'bg-slate-800/40',
-                border: 'border-slate-700/50',
-                navbarScrolled: 'bg-[#0f172a]/85',
-                footerBg: 'bg-slate-950'
-            }
-        },
-        'light-purple': {
-            name: 'light-purple',
-            isDark: false,
-            colors: {
-                background: 'radial-gradient(circle at 50% 10%, #ede9fe 0%, #f3f4f6 60%)',
-                accent: '#7c4dff',
-                accentHover: '#6200ea',
-                textMain: 'text-gray-900',
-                textSecondary: 'text-gray-600',
-                surface: 'bg-white',
-                border: 'border-gray-200',
-                navbarScrolled: 'bg-white/90',
-                footerBg: 'bg-[#0b0c26]'
-            }
-        },
-        'light-blue': {
-            name: 'light-blue',
-            isDark: false,
-            colors: {
-                background: 'radial-gradient(circle at 50% 10%, #eff6ff 0%, #f8fafc 60%)',
-                accent: '#2563eb',
-                accentHover: '#1d4ed8',
-                textMain: 'text-slate-900',
-                textSecondary: 'text-slate-600',
-                surface: 'bg-white',
-                border: 'border-slate-200',
-                navbarScrolled: 'bg-white/90',
-                footerBg: 'bg-slate-900'
-            }
+              'brand-blue': '#0A1245',
+              'brand-accent': '#2A45C2',
+              'brand-cream': '#F2F0EB',
+              'brand-dark': '#050820',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            letterSpacing: {
+              'tighter': '-0.04em',
+              'tightest': '-0.06em',
+              'widest': '0.2em',
+            },
+          }
         }
-    };
+      }
+    </script>
+    
+    <style>
+      body { background-color: #F2F0EB; color: #0A1245; overflow-x: hidden; }
+      ::-webkit-scrollbar { width: 0px; background: transparent; }
+      .line-inner { will-change: transform; }
+      html.lenis, html.lenis body { height: auto; }
+      .lenis.lenis-smooth { scroll-behavior: auto !important; }
+      .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+      .lenis.lenis-stopped { overflow: hidden; }
+      body.no-scroll { overflow: hidden !important; }
+      .cert-card img { filter: grayscale(100%) brightness(0.8) contrast(1.2); mix-blend-mode: multiply; opacity: 0.3; transition: all 0.5s ease; }
+      .cert-card:hover img { opacity: 0.6; filter: grayscale(0%) brightness(1); }
+      .neural-node { transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+      .neural-line { transition: all 0.3s ease; }
+    </style>
+    
+    <script type="importmap">
+    {
+      "imports": {
+        "lucide-react": "https://esm.sh/lucide-react@0.463.0",
+        "react-dom/client": "https://esm.sh/react-dom@19.2.4/client",
+        "react": "https://esm.sh/react@19.2.4"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
 
-    const ThemeContext = createContext();
+    <script type="text/babel" data-type="module" data-presets="react">
+      import React, { useState, useEffect, useRef, useLayoutEffect, createContext, useContext } from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { ArrowRight, ArrowUpRight, Github, Mail, MapPin, X, BookOpen, ExternalLink, Cpu, Database, TrendingUp, Brain, BarChart3, Terminal, Menu } from 'lucide-react';
 
-    const ThemeProvider = ({ children }) => {
-        const [currentThemeName, setCurrentThemeName] = useState('dark-purple');
-        const theme = themes[currentThemeName];
+      gsap.registerPlugin(ScrollTrigger);
 
-        useEffect(() => {
-            document.body.style.background = theme.colors.background;
-            document.body.style.minHeight = '100vh';
-            document.body.style.color = theme.isDark ? 'white' : '#1f2937';
-        }, [theme]);
+      // --- TRANSLATIONS & CONSTANTS ---
+      const CV_PATH = "assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf";
+
+      const TRANSLATIONS = {
+        es: {
+          nav: [
+            { label: 'Perfil', id: '#profile' },
+            { label: 'Proyectos', id: '#projects' },
+            { label: 'Trayectoria', id: '#trajectory' },
+            { label: 'Expertise', id: '#expertise' }
+          ],
+          hero: { lines: ['Quantitative', '& Machine', 'Learning', 'Economics'], desc: ['Estudiante de Análisis Económico (UPO).', 'Especializado en Finanzas Quant & Deep Learning.'] },
+          intro: "Estudiante de Análisis Económico apasionado por la intersección entre la teoría económica y la inteligencia artificial. Enfocado en extraer señal de datos financieros complejos mediante modelos avanzados.",
+          githubBtn: "Perfil GitHub",
+          cvDownload: "Descargar CV",
+          cvView: "Visualizar CV",
+          projects: {
+            section: "01 / Portfolio", title: ["Proyectos", "Destacados"], cta: "Desliza para explorar",
+            items: [
+              { 
+                id: "01", 
+                title: "Cine ML", 
+                sub: "Python · AutoML", 
+                link: "https://github.com/goco41/ML-DS-para-Peliculas", 
+                problem: "Desaparición de herramientas de recomendación personalizadas.", 
+                solution: "Pipeline de ML integrando APIs externas y AutoML para predecir afinidad.", 
+                usage: "Personalización de experiencia de usuario en bibliotecas de medios.", 
+                storyTitle: "El Reto de Palomitacas", 
+                story: `Hace años empecé a usar una web llamada Palomitacas. La elegí porque tenía una función que me encantaba: me decía qué nota le daría yo a una película antes de verla. Un día, esa función desapareció sin explicación. En aquel entonces, yo estaba empezando en el análisis de datos y ML, así que intenté replicarla por mi cuenta. Fracasé estrepitosamente y lo dejé aparcado.\n\nHace unos meses decidí retomar ese reto personal para ver cuánto había mejorado. Sabía que mi base de datos era ínfima y que extraer señal de ahí sería como intentar 'matar moscas a cañonazos', pero me daba igual: quería exprimir cada dato y ver hasta dónde podía llegar. No buscaba un modelo perfecto ni métricas de libro, buscaba una herramienta que me guiase.\n\nEl resultado es un proyecto de Machine Learning en Python que integra APIs, técnicas de AutoML y modelos personalizados. Es una solución humilde, pero que funciona y cumple su objetivo. Espero volver a este dataset en el futuro con más conocimientos y ver cómo siguen evolucionando las métricas.` 
+              },
+              { 
+                id: "02", 
+                title: "Alphas", 
+                sub: "Finanzas Quant", 
+                link: "https://github.com/goco41/ind-4-alphas/tree/main", 
+                problem: "Fragilidad y data leakage en estrategias de trading algorítmico.", 
+                solution: "Framework robusto de validación estadística y backtesting riguroso.", 
+                usage: "Validación de señales predictivas antes de ejecución en mercado real.", 
+                storyTitle: "La Búsqueda de Alpha", 
+                story: `Prácticamente desde que empecé con Python, sabía que quería aplicarlo a las finanzas y los datos, pero era consciente de su complejidad. Por ello, decidí posponerlo para centrarme en mis estudios y la Selectividad. Todo cambió un día charlando con mi Jefe de Estudios; vi en su ordenador el icono de MetaTrader 5 y no pude evitar preguntar. Me explicó que tenía una estrategia automatizada para el EURUSD, pero que le había costado años desarrollarla y no pensaba desvelar su 'secreto' a nadie.\n\nEse día volví a casa con un reto personal: yo también quería construir algo así. Él era alguien con carrera, máster y años de experiencia, pero aun así acepté el desafío. Pasé tardes, días y semanas enteras experimentando con Python, intercalando mis estudios con la búsqueda de esa idea ganadora y otros proyectos con python. Fracasé una y otra vez. Cada vez que creía tener algo que funcionaba, descubría rastros de data leakage o contaminación de datos. En cuanto corregía el error, la rentabilidad se esfumaba.\n\nTras muchos intentos, dejé de intentar ignorar la dura realidad: me faltaban Alphas (señales predictivas reales). Sabía que 'si entra basura, sale basura'. Por eso, con la estadística en la mano, decidí centrarme en construir el pipeline que me ayudaría en el proceso.\n\nEmprendí este proyecto sabiendo que los indicadores convencionales están muy explotados y que las probabilidades de éxito inmediato eran bajas. Sin embargo, el resultado fue un éxito en lo que realmente importa: he creado una infraestructura robusta para testear ideas con rigor científico y separar, por fin, la suerte de la verdadera ventaja estadística. Ahora no solo tengo código; tengo un método sólido para validar cualquier Alpha que surja en el futuro.` 
+              },
+              { 
+                id: "03", 
+                title: "Réplica SRDDQN", 
+                sub: "Deep RL", 
+                link: "https://github.com/goco41/SRDDQN4tr", 
+                problem: "Papers académicos con métricas irreales por omisión de spread.", 
+                solution: "Implementación de arquitectura TimesNet (Fourier) con costes reales.", 
+                usage: "Evaluación de viabilidad de modelos de Deep Learning en producción.", 
+                storyTitle: "Rigor vs. Hype Académico", 
+                story: `Tras dedicar mucho tiempo a intentar diseñar un sistema propio que fuese robusto, llegué a una conclusión lógica: existen investigadores y mentes brillantes que ya han publicado soluciones avanzadas. ¿Por qué no apoyarme en su experiencia? Así fue como, tras una búsqueda intensiva de literatura técnica, descubrí el paper SRDDQN.\n\nLo que me cautivó de este estudio fue el uso de TimesNet. Me pareció fascinante encontrar una arquitectura que tratase las series temporales como imágenes mediante la Transformada de Fourier, que es, casualmente, uno de mis conceptos matemáticos favoritos. La posibilidad de aplicar visión por computador al análisis financiero, sumada a un mecanismo de auto-recompensa dinámica (donde la IA decide cómo premiar su propio aprendizaje), me motivó a implementar el proyecto por completo.\n\nEl proceso fue exigente: desde el diseño de diagramas de flujo hasta la reconstrucción de los gráficos de rendimiento. Sin embargo, la réplica también me aportó una lección valiosa sobre el rigor en la investigación. El paper original reportaba rentabilidades y Ratios de Sharpe extraordinarios que, en mi implementación, no se alcanzaron.\n\nAl analizar las causas, identifiqué factores críticos: el paper utiliza un split simple de train y test, lo que facilita un sobreajuste (overfitting) a este último. Además, con casi total seguridad, el estudio omite el impacto del spread entre Bid y Ask. En mi réplica, al ser más estricto con los costes reales de ejecución, los resultados fueron más humildes, pero también más honestos y cercanos a la realidad del mercado. A pesar de la discrepancia en las métricas, este proyecto ha sido una de las experiencias de aprendizaje más enriqueceras que he tenido.` 
+              }
+            ],
+            labels: { problem: "Problema", solution: "Solución", usage: "Uso Empresarial", storyBtn: "Leer Origen", linkBtn: "GitHub" }
+          },
+          edu: {
+            section: "02 / Trayectoria", title: ["Formación", "& Liderazgo"],
+            items: [
+              { title: "Grado en Análisis Económico", place: "Universidad Pablo de Olavide", year: "2025 - 2029", desc: "Teoría económica avanzada y métodos econométricos. Delegado de clase y miembro activo del club de debate." },
+              { title: "Tutorías de Estadística", place: "Apoyo Académico", year: "2025 - 2026", desc: "Liderazgo académico impartiendo clases de apoyo a compañeros. Enfoque en claridad pedagógica y resolución de ejercicios complejos." },
+              { title: "Inglés B2", place: "Escuela Oficial de Idiomas", year: "Certificado", desc: "Competencia profesional completa, permitiendo la lectura fluida de papers técnicos y documentación especializada." }
+            ]
+          },
+          skills: { 
+            section: "Credenciales", subtitle: "[ Certificaciones Oficiales ]", title: ["Credenciales", "& Expertise"], graphTitle: "Tech Ecosystem", graphLabel: "● Grafo Vivo",
+            nodes: { core: "GONZALO", dl: "DEEP LEARNING", quant: "QUANT ANALYTICS", eng: "INGENIERÍA", pytorch: "PyTorch", rl: "Reinforcement Learning", timesnet: "Series Temporales", automl: "AutoML", backtest: "Backtesting", stats: "Validación Estadística", markets: "Mercados", risk: "Gestión de Riesgo", python: "Python (Adv)", pandas: "Pandas/NumPy", numba: "Numba", scikit: "Scikit-learn" }
+          },
+          footer: { locationLabel: "Ubicación", location: "Sevilla, España", contactLabel: "Contacto", aboutLabel: "Sobre mí", about: "Me gusta aprender y mejorar constantemente. Soy curioso, constante y risueño, y disfruto trabajando en equipo y ayudando a otras personas a entender conceptos complejos de forma clara y estructurada." }
+        },
+        en: {
+          nav: [ { label: 'Profile', id: '#profile' }, { label: 'Projects', id: '#projects' }, { label: 'Career', id: '#trajectory' }, { label: 'Expertise', id: '#expertise' } ],
+          hero: { lines: ['Quantitative', '& Machine', 'Learning', 'Economics'], desc: ['Economics Student (UPO).', 'Specialized in Quant Finance & Deep Learning.'] },
+          intro: "Economics student passionate about the intersection of economic theory and artificial intelligence. Focused on extracting signal from complex financial data using advanced models.",
+          githubBtn: "GitHub Profile",
+          cvDownload: "Download CV",
+          cvView: "View CV",
+          projects: {
+            section: "01 / Portfolio", title: ["Featured", "Projects"], cta: "Swipe to explore",
+            items: [
+              { id: "01", title: "Cine ML", sub: "Python · AutoML", link: "https://github.com/goco41/ML-DS-para-Peliculas", problem: "Disappearance of personalized recommendation tools.", solution: "ML pipeline integrating external APIs and AutoML to predict affinity.", usage: "User experience personalization in media libraries.", storyTitle: "The Palomitacas Challenge", story: `Years ago I used a website that predicted my rating for movies. When it disappeared, I decided to replicate it. The result is a functional solution that squeezes signal from tiny datasets.` },
+              { id: "02", title: "Alphas", sub: "Quant Finance", link: "https://github.com/goco41/ind-4-alphas/tree/main", problem: "Fragility and data leakage in algorithmic trading strategies.", solution: "Robust statistical validation framework and rigorous backtesting.", usage: "Validation of predictive signals before execution in real markets.", storyTitle: "The Search for Alpha", story: `Inspired by a chat with my Head of Studies, I accepted the challenge of building an automated system. I built a scientific validation framework that separates luck from true advantage.` },
+              { id: "03", title: "SRDDQN Replica", sub: "Deep RL", link: "https://github.com/goco41/SRDDQN4tr", problem: "Academic papers with unrealistic metrics due to omission of spread.", solution: "Implementation of TimesNet architecture (Fourier) with real costs.", usage: "Feasibility assessment of Deep Learning models in production.", storyTitle: "Rigor vs. Academic Hype", story: `I was fascinated by the use of the Fourier Transform to treat time series as images. By replicating SRDDQN, I discovered that market reality reduces the originally reported profits.` }
+            ],
+            labels: { problem: "Problem", solution: "Solution", usage: "Business Value", storyBtn: "Read Origin", linkBtn: "GitHub" }
+          },
+          edu: {
+            section: "02 / Career", title: ["Education", "& Leadership"],
+            items: [
+              { title: "Degree in Economic Analysis", place: "Pablo de Olavide University", year: "2025 - 2029", desc: "Rigorous training in economic theory and econometric methods. Class representative and active member of the debate club." },
+              { title: "Statistics Tutoring", place: "Academic Support", year: "2025 - 2026", desc: "Academic leadership teaching support classes to peers. Focus on pedagogical clarity and solving complex exercises." },
+              { title: "English B2", place: "Official School of Languages", year: "Certified", desc: "Full professional proficiency, allowing fluent reading of technical papers and specialized documentation." }
+            ]
+          },
+          skills: { section: "Credentials", subtitle: "[ Official Certifications ]", title: ["Credentials", "& Expertise"], graphTitle: "Tech Ecosystem", graphLabel: "● Live Graph", nodes: { core: "GONZALO", dl: "DEEP LEARNING", quant: "QUANT ANALYTICS", eng: "ENGINEERING", pytorch: "PyTorch", rl: "Reinforcement Learning", timesnet: "Time Series", automl: "AutoML", backtest: "Backtesting", stats: "Stat Validation", markets: "Markets", risk: "Risk Mgmt", python: "Python (Adv)", pandas: "Pandas/NumPy", numba: "Numba", scikit: "Scikit-learn" } },
+          footer: { locationLabel: "Location", location: "Sevilla, España", contactLabel: "Contact", aboutLabel: "About Me", about: "I love learning and constantly improving. I am curious, consistent, and cheerful, and I enjoy working in a team and helping others understand complex concepts clearly and structurally." }
+        }
+      };
+
+      const LanguageContext = createContext();
+
+      // --- UTILS ---
+      const useGSAP = (callback, deps = []) => {
+        useLayoutEffect(() => {
+          const ctx = gsap.context(callback);
+          return () => ctx.revert();
+        }, deps);
+      };
+
+      const MagneticButton = ({ children, className = "" }) => {
+        const btnRef = useRef(null);
+        useGSAP(() => {
+          const el = btnRef.current;
+          const xTo = gsap.quickTo(el, "x", { duration: 1, ease: "elastic.out(1, 0.3)" });
+          const yTo = gsap.quickTo(el, "y", { duration: 1, ease: "elastic.out(1, 0.3)" });
+          const mouseMove = (e) => {
+            const { clientX, clientY } = e;
+            const { height, width, left, top } = el.getBoundingClientRect();
+            xTo((clientX - (left + width / 2)) * 0.35);
+            yTo((clientY - (top + height / 2)) * 0.35);
+          };
+          const mouseLeave = () => { xTo(0); yTo(0); };
+          el.addEventListener("mousemove", mouseMove);
+          el.addEventListener("mouseleave", mouseLeave);
+          return () => { el.removeEventListener("mousemove", mouseMove); el.removeEventListener("mouseleave", mouseLeave); };
+        }, []);
+        return React.cloneElement(children, { ref: btnRef, className: `${children.props.className || ""} ${className}` });
+      };
+
+      // --- SHARED UI ---
+      const CVButtonGroup = ({ variant = "dark" }) => {
+        const { t } = useContext(LanguageContext);
+        const baseClass = variant === "dark" 
+          ? "px-6 py-4 border border-brand-blue/20 rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-blue hover:text-brand-cream transition-colors flex items-center gap-2"
+          : "px-6 py-4 bg-brand-blue text-brand-cream rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-accent transition-colors flex items-center gap-2";
 
         return (
-            <ThemeContext.Provider value={{ theme, setTheme: setCurrentThemeName }}>
-                {children}
-            </ThemeContext.Provider>
+          <>
+            <MagneticButton>
+              <a href={CV_PATH} download className={baseClass}>
+                <i className="fas fa-file-download"></i> {t.cvDownload}
+              </a>
+            </MagneticButton>
+            <MagneticButton>
+              <a href={CV_PATH} target="_blank" className={baseClass}>
+                <i className="fas fa-eye"></i> {t.cvView}
+              </a>
+            </MagneticButton>
+          </>
         );
-    };
+      };
 
-    const useTheme = () => useContext(ThemeContext);
+      // --- SECTIONS ---
 
-    // --- COMPONENTS ---
+      const Header = () => {
+        const { lang, setLang, t, lenis } = useContext(LanguageContext);
+        const headerRef = useRef(null);
+        useGSAP(() => { gsap.from(headerRef.current, { yPercent: -100, opacity: 0, duration: 1, ease: "power4.out", delay: 0.2 }); });
+        const scrollTo = (id) => { if (lenis) lenis.scrollTo(id, { offset: 0, duration: 1.5 }); };
 
-    const ThemeSwitcher = () => {
-        const { setTheme, theme } = useTheme();
+        return (
+          <header ref={headerRef} className="fixed top-0 left-0 w-full z-50 px-6 py-6 mix-blend-difference text-brand-cream pointer-events-none">
+            <div className="flex justify-between items-start pointer-events-auto">
+              <div className="flex flex-col cursor-pointer" onClick={() => scrollTo(0)}>
+                <span className="font-mono text-xs uppercase tracking-widest font-bold">Gonzalo</span>
+                <span className="font-mono text-xs uppercase tracking-widest opacity-60">Pilar Sánchez</span>
+              </div>
+              <div className="hidden md:flex gap-12 font-mono text-xs uppercase tracking-widest">
+                {t.nav.map((item, i) => (
+                  <div key={i} onClick={() => scrollTo(item.id)} className="group overflow-hidden cursor-pointer relative">
+                    <span className="inline-block transition-transform duration-500 group-hover:-translate-y-full">{item.label}</span>
+                    <span className="absolute top-0 left-0 translate-y-full transition-transform duration-500 group-hover:translate-y-0 text-brand-accent">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-4">
+                <button onClick={() => setLang(lang === 'es' ? 'en' : 'es')} className="flex items-center justify-center px-4 py-2 border border-brand-cream/20 rounded-full bg-brand-cream/5 backdrop-blur-sm group cursor-pointer hover:bg-brand-cream transition-colors duration-300">
+                  <div className="flex gap-2 font-mono text-[10px] font-bold group-hover:text-brand-blue tracking-widest">
+                    <span className={lang === 'es' ? 'opacity-100' : 'opacity-40'}>ES</span>
+                    <span className="opacity-40">/</span>
+                    <span className={lang === 'en' ? 'opacity-100' : 'opacity-40'}>EN</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </header>
+        );
+      };
 
-        const buttons = [
-            { id: 'dark-purple', label: 'Dark Purple', bg: 'bg-[#0b0c26]', border: 'border-[#7c4dff]' },
-            { id: 'dark-blue', label: 'Dark Blue', bg: 'bg-[#0f172a]', border: 'border-[#3b82f6]' },
-            { id: 'light-purple', label: 'Light Purple', bg: 'bg-[#f3f4f6]', border: 'border-[#7c4dff]' },
-            { id: 'light-blue', label: 'Light Blue', bg: 'bg-[#f8fafc]', border: 'border-[#2563eb]' },
+      const Hero = () => {
+        const { t, lang } = useContext(LanguageContext);
+        const titleRef = useRef(null);
+        useGSAP(() => {
+          const tl = gsap.timeline();
+          tl.from(titleRef.current.querySelectorAll('.line-inner'), { yPercent: 100, duration: 1.2, stagger: 0.1, ease: "power4.out", delay: 0.5 })
+            .from('.hero-meta', { opacity: 0, y: 20, duration: 1, ease: "power3.out" }, "-=0.8");
+        }, [lang]);
+
+        return (
+          <section className="relative h-screen w-full overflow-hidden flex flex-col justify-end pb-20 px-6 bg-brand-blue text-brand-cream">
+            <div className="absolute inset-0 opacity-40"><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" className="w-full h-full object-cover grayscale mix-blend-overlay" /></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/20 to-brand-blue/90"></div>
+            <div className="relative z-10 w-full max-w-[90vw] mx-auto">
+              <div ref={titleRef} className="flex flex-col">
+                {t.hero.lines.map((line, i) => (<div key={i} className="overflow-hidden"><h1 className="line-inner text-[11vw] leading-[0.8] font-bold uppercase tracking-tightest mix-blend-screen">{line}</h1></div>))}
+              </div>
+              <div className="hero-meta mt-12 flex justify-between items-end border-t border-brand-cream/20 pt-6">
+                <div className="max-w-md"><p className="font-mono text-xs sm:text-sm uppercase tracking-widest leading-relaxed opacity-80">{t.hero.desc[0]}<br/>{t.hero.desc[1]}</p></div>
+                <div className="animate-bounce"><ArrowRight className="rotate-90" /></div>
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      const Intro = () => {
+        const { t, lang } = useContext(LanguageContext);
+        const textRef = useRef(null);
+        useGSAP(() => {
+          gsap.fromTo(textRef.current.querySelectorAll('.word'), { opacity: 0.1 }, { opacity: 1, stagger: 0.05, scrollTrigger: { trigger: "#profile", start: "top 70%", end: "bottom 70%", scrub: 1 } });
+        }, [lang]);
+
+        return (
+          <section id="profile" className="min-h-[80vh] flex items-center justify-center px-6 py-24 bg-brand-cream text-brand-blue">
+            <div className="max-w-5xl mx-auto">
+              <p ref={textRef} className="text-3xl md:text-5xl font-medium leading-[1.2] tracking-tight flex flex-wrap gap-x-[0.25em]">
+                {t.intro.split(" ").map((word, i) => (<span key={i} className="word transition-colors duration-300">{word}</span>))}
+              </p>
+              <div className="mt-20 flex flex-wrap gap-4 items-center">
+                 <MagneticButton>
+                    <a href="https://github.com/goco41" target="_blank" className="px-8 py-4 border border-brand-blue/20 rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-blue hover:text-brand-cream transition-colors duration-300 flex items-center gap-2">
+                      <Github size={16} /> {t.githubBtn}
+                    </a>
+                 </MagneticButton>
+                 <CVButtonGroup variant="dark" />
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      const HorizontalProjects = () => {
+        const sectionRef = useRef(null);
+        const [activeStory, setActiveStory] = useState(null);
+        const { t, lang } = useContext(LanguageContext);
+        useGSAP(() => {
+          const track = sectionRef.current.querySelector('.track');
+          gsap.to(track, { x: () => -(track.scrollWidth - window.innerWidth), ease: "none", scrollTrigger: { trigger: sectionRef.current, pin: true, scrub: 1, end: () => `+=${track.scrollWidth - window.innerWidth}`, invalidateOnRefresh: true } });
+        }, [lang]);
+
+        return (
+          <>
+          <section id="projects" ref={sectionRef} className="overflow-hidden bg-brand-dark text-brand-cream">
+             <div className="track flex w-fit h-screen">
+                <div className="w-screen h-full flex-shrink-0 flex flex-col justify-center p-8 md:p-24 border-r border-white/10">
+                   <span className="font-mono text-xs uppercase tracking-widest text-brand-accent mb-6">{t.projects.section}</span>
+                   <h2 className="text-[12vw] leading-[0.8] font-bold tracking-tightest">{t.projects.title[0]}<br/>{t.projects.title[1]}</h2>
+                   <div className="mt-12 flex items-center gap-4"><span className="font-mono text-xs uppercase tracking-widest opacity-50">{t.projects.cta}</span><ArrowRight size={16} className="animate-pulse" /></div>
+                </div>
+                {t.projects.items.map((p, i) => (
+                  <div key={i} className="w-[85vw] md:w-[75vw] h-full flex-shrink-0 flex flex-col justify-between p-12 md:p-24 border-r border-white/10 relative group">
+                     <span className="absolute top-12 left-12 font-mono text-[15rem] md:text-[20rem] opacity-[0.03] font-bold leading-none select-none pointer-events-none">{p.id}</span>
+                     <div className="relative z-10 h-full flex flex-col justify-end">
+                        <span className="font-mono text-xs uppercase tracking-widest text-brand-accent mb-4 block">{p.sub}</span>
+                        <h3 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8">{p.title}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-brand-accent/20 pt-8 mb-12">
+                            <div><span className="font-mono text-[10px] uppercase tracking-widest text-brand-accent/80 mb-2 block">{t.projects.labels.problem}</span><p className="text-brand-cream/70 text-sm">{p.problem}</p></div>
+                            <div><span className="font-mono text-[10px] uppercase tracking-widest text-brand-accent/80 mb-2 block">{t.projects.labels.solution}</span><p className="text-brand-cream/70 text-sm">{p.solution}</p></div>
+                            <div><span className="font-mono text-[10px] uppercase tracking-widest text-brand-accent/80 mb-2 block">{t.projects.labels.usage}</span><p className="text-brand-cream/70 text-sm">{p.usage}</p></div>
+                        </div>
+                        <div className="flex gap-4">
+                            <button onClick={() => setActiveStory(p)} className="px-8 py-4 bg-brand-cream text-brand-blue rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-accent hover:text-white transition-colors flex items-center gap-2"><BookOpen size={14} /> {t.projects.labels.storyBtn}</button>
+                            <a href={p.link} target="_blank" className="px-8 py-4 border border-brand-cream/20 rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-cream hover:text-brand-blue transition-colors flex items-center gap-2">{t.projects.labels.linkBtn} <ArrowUpRight size={14} /></a>
+                        </div>
+                     </div>
+                  </div>
+                ))}
+             </div>
+          </section>
+          {activeStory && (
+            <div className="fixed inset-0 z-[100] pointer-events-auto flex justify-end">
+              <div onClick={() => setActiveStory(null)} className="absolute inset-0 bg-brand-dark/60 backdrop-blur-sm"></div>
+              <div className="relative h-screen w-full md:w-[600px] bg-brand-cream text-brand-blue shadow-2xl overflow-y-auto">
+                <button onClick={() => setActiveStory(null)} className="absolute top-8 right-8 w-10 h-10 border border-brand-blue/20 rounded-full flex items-center justify-center hover:bg-brand-blue hover:text-brand-cream transition-colors z-20"><X size={18} /></button>
+                <div className="p-8 md:p-12 pt-20 pb-48">
+                   <span className="font-mono text-xs uppercase tracking-widest text-brand-accent mb-4 block">{t.projects.labels.storyBtn}</span>
+                   <h2 className="text-4xl font-bold tracking-tight mb-8 leading-[1.1]">{activeStory.storyTitle}</h2>
+                   <div className="prose prose-lg text-brand-blue/80 leading-relaxed space-y-6">
+                      {activeStory.story.split('\n').map((p, i) => p.trim() && <p key={i}>{p}</p>)}
+                   </div>
+                   <div className="h-32 w-full" /> {/* Spacer extra para evitar cortes */}
+                </div>
+              </div>
+            </div>
+          )}
+          </>
+        );
+      };
+
+      const EducationVertical = () => {
+        const { t, lang } = useContext(LanguageContext);
+        const [activeIdx, setActiveIdx] = useState(0);
+        useGSAP(() => {
+          gsap.utils.toArray('.edu-card').forEach((item, i) => {
+            ScrollTrigger.create({ trigger: item, start: "top center", end: "bottom center", onEnter: () => setActiveIdx(i), onEnterBack: () => setActiveIdx(i) });
+          });
+        }, [lang]);
+
+        return (
+          <section id="trajectory" className="relative flex flex-col md:flex-row bg-brand-cream border-t border-brand-blue/10">
+            <div className="w-full md:w-1/2 h-auto md:h-screen sticky top-0 flex flex-col justify-between p-8 md:p-16 border-r border-brand-blue/10 bg-brand-cream z-10">
+              <div><span className="font-mono text-xs uppercase tracking-widest text-brand-blue/50 mb-4 block">{t.edu.section}</span><h2 className="text-5xl md:text-7xl font-bold text-brand-blue tracking-tighter mb-8">{t.edu.title[0]}<br/>{t.edu.title[1]}</h2></div>
+              <div className="hidden md:flex flex-col gap-4">
+                 {t.edu.items.map((e, i) => (
+                   <div key={i} className={`transition-all duration-500 flex items-center gap-4 ${activeIdx === i ? 'opacity-100 translate-x-4' : 'opacity-30'}`}><span className="font-mono text-xs">0{i+1}</span><span className="text-xl font-medium truncate max-w-[250px]">{e.title}</span></div>
+                 ))}
+              </div>
+            </div>
+            <div className="w-full md:w-1/2">
+               {t.edu.items.map((edu, i) => (
+                 <div key={i} className="edu-card min-h-[80vh] flex flex-col justify-center p-8 md:p-16 border-b border-brand-blue/10 last:border-0">
+                    <span className="font-mono text-brand-accent mb-4 block">0{i+1}</span>
+                    <h3 className="text-3xl md:text-4xl font-bold text-brand-blue mb-2">{edu.title}</h3>
+                    <div className="flex gap-4 font-mono text-xs uppercase text-brand-blue/60 mb-8"><span>{edu.place}</span><span>•</span><span>{edu.year}</span></div>
+                    <p className="text-brand-blue/80 text-lg leading-relaxed">{edu.desc}</p>
+                 </div>
+               ))}
+            </div>
+          </section>
+        );
+      };
+
+      const NeuralSkillGraph = () => {
+        const { t } = useContext(LanguageContext);
+        const [activeCategory, setActiveCategory] = useState(null);
+        const nodes = [
+          { id: 'core', label: t.skills.nodes.core, type: 'root', x: 50, y: 50 },
+          { id: 'dl', label: t.skills.nodes.dl, type: 'hub', x: 20, y: 30, icon: <Brain size={20} /> },
+          { id: 'quant', label: t.skills.nodes.quant, type: 'hub', x: 80, y: 30, icon: <BarChart3 size={20} /> },
+          { id: 'eng', label: t.skills.nodes.eng, type: 'hub', x: 50, y: 80, icon: <Terminal size={20} /> },
+          { id: 'pytorch', label: t.skills.nodes.pytorch, type: 'leaf', parent: 'dl', x: 10, y: 15 },
+          { id: 'rl', label: t.skills.nodes.rl, type: 'leaf', parent: 'dl', x: 30, y: 10 },
+          { id: 'timesnet', label: t.skills.nodes.timesnet, type: 'leaf', parent: 'dl', x: 5, y: 40 },
+          { id: 'automl', label: t.skills.nodes.automl, type: 'leaf', parent: 'dl', x: 35, y: 45 },
+          { id: 'backtest', label: t.skills.nodes.backtest, type: 'leaf', parent: 'quant', x: 70, y: 10 },
+          { id: 'stats', label: t.skills.nodes.stats, type: 'leaf', parent: 'quant', x: 90, y: 15 },
+          { id: 'risk', label: t.skills.nodes.risk, type: 'leaf', parent: 'quant', x: 65, y: 40 },
+          { id: 'python', label: t.skills.nodes.python, type: 'leaf', parent: 'eng', x: 30, y: 75 },
+          { id: 'pandas', label: t.skills.nodes.pandas, type: 'leaf', parent: 'eng', x: 70, y: 75 },
+          { id: 'numba', label: t.skills.nodes.numba, type: 'leaf', parent: 'eng', x: 40, y: 95 },
+          { id: 'scikit', label: t.skills.nodes.scikit, type: 'leaf', parent: 'eng', x: 60, y: 95 },
+        ];
+        const connections = [{ from: 'core', to: 'dl' }, { from: 'core', to: 'quant' }, { from: 'core', to: 'eng' }, ...nodes.filter(n => n.type === 'leaf').map(n => ({ from: n.parent, to: n.id }))];
+        useGSAP(() => { gsap.to('.neural-node', { y: "random(-10, 10)", x: "random(-5, 5)", duration: "random(2, 4)", repeat: -1, yoyo: true, ease: "sine.inOut", stagger: { amount: 1.5, from: "center" } }); }, []);
+
+        return (
+          <div className="relative w-full aspect-[4/3] md:aspect-[2/1] bg-brand-cream rounded-3xl overflow-hidden border border-brand-blue/10 my-12 shadow-inner">
+             <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#0A1245 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+             <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+               {connections.map((conn, i) => {
+                 const s = nodes.find(n => n.id === conn.from); const e = nodes.find(n => n.id === conn.to);
+                 const active = activeCategory && (conn.from === activeCategory || conn.to === activeCategory || (activeCategory === 'core' && conn.from === 'core'));
+                 return (<line key={i} x1={`${s.x}%`} y1={`${s.y}%`} x2={`${e.x}%`} y2={`${e.y}%`} stroke={active ? "#2A45C2" : "#0A1245"} strokeWidth={active ? 2 : 1} strokeOpacity={active ? 0.6 : 0.1} className="neural-line" />);
+               })}
+             </svg>
+             {nodes.map((node) => {
+               const active = activeCategory === node.id || (activeCategory && nodes.find(n => n.id === activeCategory)?.type === 'hub' && (node.parent === activeCategory || (activeCategory === node.id) || (node.id === 'core'))) || (activeCategory === 'core' && node.type === 'hub');
+               return (
+                 <div key={node.id} className={`neural-node absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer z-10 flex flex-col items-center justify-center ${node.type === 'root' ? 'w-24 h-24 bg-brand-blue text-brand-cream z-20 font-bold text-xs' : node.type === 'hub' ? 'w-16 h-16 bg-white border border-brand-blue/10 hover:border-brand-accent' : 'px-3 py-1 bg-white/80 text-[10px]'} rounded-full transition-all duration-300 ${active ? 'scale-110 shadow-xl opacity-100 grayscale-0' : 'opacity-70 grayscale'}`} style={{ left: `${node.x}%`, top: `${node.y}%` }} onMouseEnter={() => setActiveCategory(node.id)} onMouseLeave={() => setActiveCategory(null)}>
+                    {node.type === 'root' ? node.label : node.type === 'hub' ? (<div className="flex flex-col items-center gap-1"><div className={active ? 'text-brand-accent' : 'text-brand-blue'}>{node.icon}</div><span className="text-[8px] font-mono uppercase font-bold">{node.label}</span></div>) : (<span className="font-mono font-medium whitespace-nowrap">{node.label}</span>)}
+                 </div>
+               );
+             })}
+          </div>
+        );
+      };
+
+      const CertificationsAndSkills = () => {
+        const { t, lang } = useContext(LanguageContext);
+        const certs = [
+          { name: "Deep Learning Specialization", issuer: "DeepLearning.AI", logo: "https://pbs.twimg.com/profile_images/1305952402179854336/M7U-Uq86_400x400.jpg", link: "https://www.coursera.org/account/accomplishments/specialization/7ND7TBWJMWN6" },
+          { name: "Machine Learning Specialization", issuer: "Stanford University", logo: "https://identity.stanford.edu/wp-content/uploads/sites/3/2020/07/block-s-right.png", link: "https://www.coursera.org/account/accomplishments/specialization/EHJNK64CH2KH" },
+          { name: "Financial Markets", issuer: "Yale University", logo: "https://upload.wikimedia.org/wikipedia/commons/0/07/Yale_University_Shield_1.svg", link: "https://www.coursera.org/account/accomplishments/verify/GXI9YC44R2E2" }
         ];
 
         return (
-            <div className="fixed top-5 right-5 z-[60] flex gap-2 p-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-lg">
-                {buttons.map((btn) => (
-                    <button
-                        key={btn.id}
-                        onClick={() => setTheme(btn.id)}
-                        title={btn.label}
-                        className={`w-6 h-6 rounded-full ${btn.bg} border-2 ${btn.border} ${
-                            theme.name === btn.id ? 'scale-125 ring-2 ring-white shadow-lg' : 'hover:scale-110 opacity-70 hover:opacity-100'
-                        } transition-all duration-300`}
-                    />
-                ))}
-            </div>
+          <section id="expertise" className="bg-brand-cream py-32 px-6">
+             <div className="flex justify-between items-end mb-20 border-b border-brand-blue/10 pb-8">
+               <h2 className="text-4xl md:text-6xl font-bold text-brand-blue tracking-tighter">{t.skills.title[0]}<br/>{t.skills.title[1]}</h2>
+               <div className="hidden md:block font-mono text-xs uppercase text-brand-blue/50">{t.skills.subtitle}</div>
+             </div>
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
+               {certs.map((c, i) => (
+                 <a href={c.link} target="_blank" key={i} className="cert-card group relative min-h-[350px] border border-brand-blue/10 rounded-2xl overflow-hidden flex flex-col justify-between p-8 hover:border-brand-accent/40 transition-all duration-500 bg-white/50">
+                    <div className="bg-layer absolute inset-0 flex items-center justify-center pointer-events-none"><img src={c.logo} className="w-32 h-32 object-contain" alt={c.issuer} /></div>
+                    <div className="relative z-10 flex justify-between items-start"><span className="font-mono text-[10px] uppercase text-brand-blue/40">Credential</span><ExternalLink size={16} className="text-brand-accent opacity-0 group-hover:opacity-100" /></div>
+                    <div className="relative z-10"><span className="block font-mono text-xs text-brand-accent mb-2">{c.issuer}</span><h3 className="text-2xl font-bold text-brand-blue leading-tight">{c.name}</h3></div>
+                 </a>
+               ))}
+             </div>
+             <div className="pt-16 border-t border-brand-blue/10">
+                <div className="flex justify-between items-center mb-8"><h3 className="font-mono text-xs uppercase tracking-widest text-brand-blue/60">{t.skills.graphTitle}</h3><span className="font-mono text-[10px] uppercase text-brand-accent animate-pulse">{t.skills.graphLabel}</span></div>
+                <NeuralSkillGraph />
+                <div className="mt-20 flex flex-wrap gap-6 justify-center">
+                  <CVButtonGroup variant="light" />
+                </div>
+             </div>
+          </section>
         );
-    };
+      };
 
-    const Navbar = () => {
-        const [isScrolled, setIsScrolled] = useState(false);
-        const { theme } = useTheme();
+      const Footer = () => {
+        const { t, lang } = useContext(LanguageContext);
+        const footerRef = useRef(null);
+        useGSAP(() => { gsap.from('.footer-content', { yPercent: -50, opacity: 0, scrollTrigger: { trigger: footerRef.current, start: "top bottom", end: "bottom bottom", scrub: true } }); }, [lang]);
 
+        return (
+          <footer ref={footerRef} className="bg-brand-blue text-brand-cream pt-32 pb-12 px-6 relative overflow-hidden">
+             <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-5"><span className="text-[25vw] font-bold leading-none select-none absolute top-[-5vw] left-[-2vw]">GONZALO</span></div>
+             <div className="footer-content relative z-10 container mx-auto">
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-32">
+                 <div><span className="font-mono text-xs tracking-widest opacity-40 mb-6 block">{t.footer.locationLabel}</span><p className="text-lg flex items-center gap-2"><MapPin size={18} /> {t.footer.location}</p></div>
+                 <div><span className="font-mono text-xs tracking-widest opacity-40 mb-6 block">{t.footer.contactLabel}</span><a href="mailto:gonzalopilar2005@gmail.com" className="text-lg hover:text-brand-accent transition-colors block break-all">gonzalopilar2005@gmail.com</a></div>
+                 <div className="lg:col-span-2">
+                    <span className="font-mono text-xs tracking-widest opacity-40 mb-6 block">{t.footer.aboutLabel}</span>
+                    <p className="text-brand-cream/70 text-lg leading-relaxed">{t.footer.about}</p>
+                 </div>
+               </div>
+               <div className="flex flex-col md:flex-row justify-between items-end pt-12 border-t border-brand-cream/10">
+                 <h2 className="text-[12vw] leading-[0.8] font-bold uppercase mb-8 md:mb-0">Pilar<br/>Sánchez</h2>
+                 <div className="flex gap-8 font-mono text-xs opacity-60">
+                   <a href="https://github.com/goco41" target="_blank" className="hover:opacity-100 flex items-center gap-2"><Github size={14} /> GitHub</a>
+                   <a href="mailto:gonzalopilar2005@gmail.com" className="hover:opacity-100 flex items-center gap-2"><Mail size={14} /> Email</a>
+                 </div>
+               </div>
+             </div>
+          </footer>
+        );
+      };
+
+      const App = () => {
+        const [lang, setLang] = useState('es');
+        const [lenis, setLenis] = useState(null);
         useEffect(() => {
-            const handleScroll = () => {
-                setIsScrolled(window.scrollY > 20);
-            };
-            window.addEventListener('scroll', handleScroll);
-            return () => window.removeEventListener('scroll', handleScroll);
+          const l = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), direction: 'vertical', smooth: true });
+          function raf(time) { l.raf(time); requestAnimationFrame(raf); }
+          requestAnimationFrame(raf); setLenis(l); return () => l.destroy();
         }, []);
 
-        const navClasses = isScrolled
-            ? `${theme.colors.navbarScrolled} backdrop-blur-md border-b ${theme.colors.border} shadow-sm`
-            : 'bg-transparent';
-
         return (
-            <nav className={`fixed top-0 w-full z-50 py-4 transition-all duration-500 ${navClasses}`}>
-                <div className="max-w-[1100px] mx-auto flex justify-center items-center px-5">
-                    <ul className="hidden md:flex gap-8">
-                        {['Inicio', 'Proyectos', 'Curriculum', 'Referencias', 'Contacto'].map((item) => {
-                            const href = item === 'Inicio' ? '#home' : `#${item.toLowerCase().replace('referencias', 'testimonials').replace('curriculum', 'cv')}`;
-                            return (
-                                <li key={item}>
-                                    <a 
-                                        href={href} 
-                                        className={`${theme.colors.textSecondary} font-medium text-sm transition-colors hover:opacity-100`}
-                                        style={{ '--hover-color': theme.colors.accent }}
-                                        onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accent}
-                                        onMouseLeave={(e) => e.currentTarget.style.color = ''}
-                                    >
-                                        {item}
-                                    </a>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                    <div className="md:hidden text-sm">
-                        <span className="font-bold" style={{ color: theme.colors.accent }}>GPS</span> <span className={theme.colors.textMain}>Portfolio</span>
-                    </div>
-                </div>
-            </nav>
+          <LanguageContext.Provider value={{ lang, setLang, t: TRANSLATIONS[lang], lenis }}>
+            <div className="w-full">
+              <Header />
+              <main><Hero /><Intro /><HorizontalProjects /><EducationVertical /><CertificationsAndSkills /></main>
+              <Footer />
+            </div>
+          </LanguageContext.Provider>
         );
-    };
+      };
 
-    const Hero = () => {
-        const { theme } = useTheme();
-        return (
-            <section id="home" className={`pt-40 pb-20 px-5 text-center border-b ${theme.colors.border} transition-colors duration-500`}>
-                <p style={{ color: theme.colors.accent }} className="text-xl font-semibold mb-6 tracking-wide transition-colors duration-500">
-                    ML / DATA SCIENCE / QUANT
-                </p>
-                <h1 className={`text-5xl md:text-7xl font-bold mb-4 tracking-tight ${theme.colors.textMain} transition-colors duration-500`}>
-                    <span 
-                        style={{ 
-                            backgroundImage: `linear-gradient(to right, ${theme.isDark ? '#fff' : '#111'}, ${theme.colors.accent}, ${theme.colors.accentHover})`
-                        }}
-                        className="text-transparent bg-clip-text bg-[length:200%_auto] animate-[gradient_3s_ease_infinite]"
-                    >
-                        Gonzalo Pilar Sánchez
-                    </span>
-                </h1>
-                <p className={`max-w-2xl mx-auto mb-8 text-lg leading-relaxed ${theme.colors.textSecondary} transition-colors duration-500`}>
-                    Desarrollador enfocado en Machine Learning, Data Science y Finanzas Cuantitativas. 
-                    Busco transformar datos complejos en decisiones financieras y herramientas útiles, 
-                    priorizando siempre el rigor.
-                </p>
-                <div className="flex justify-center gap-6 text-2xl md:text-3xl mb-10 text-gray-400 transition-colors duration-500">
-                    {['fab fa-python', 'fas fa-database', 'fas fa-chart-line', 'fas fa-brain', 'fas fa-code'].map((iconClass, idx) => (
-                        <i 
-                            key={idx}
-                            className={`${iconClass} hover:-translate-y-1 transition-all duration-300 cursor-pointer`}
-                            onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accent}
-                            onMouseLeave={(e) => e.currentTarget.style.color = ''}
-                        ></i>
-                    ))}
-                </div>
-                <div className="flex flex-col sm:flex-row justify-center gap-5 flex-wrap">
-                    <a 
-                        href="#projects" 
-                        style={{ backgroundColor: theme.colors.accent, boxShadow: `0 4px 15px ${theme.colors.accent}66` }}
-                        className="px-8 py-3 rounded-full text-white font-semibold hover:-translate-y-0.5 transition-all hover:brightness-110"
-                    >
-                        Ver Proyectos
-                    </a>
-                    <a 
-                        href="assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf" 
-                        download 
-                        style={{ borderColor: theme.colors.accent, color: theme.colors.accent }}
-                        className="px-8 py-3 rounded-full border-2 font-semibold hover:bg-white/10 transition-all flex items-center justify-center gap-2"
-                    >
-                        <i className="fas fa-file-download"></i> Descargar CV
-                    </a>
-                    <a 
-                        href="assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        style={{ borderColor: theme.colors.accent, color: theme.colors.accent }}
-                        className="px-8 py-3 rounded-full border-2 font-semibold hover:bg-white/10 transition-all flex items-center justify-center gap-2"
-                    >
-                        <i className="fas fa-eye"></i> Visualizar CV
-                    </a>
-                </div>
-            </section>
-        );
-    };
-
-    const Philosophy = () => {
-        const { theme } = useTheme();
-        return (
-            <section className={`py-20 border-b ${theme.colors.border} transition-colors duration-500`}>
-                <div className={`max-w-3xl mx-auto text-center ${theme.colors.surface} border ${theme.colors.border} rounded-2xl p-8 shadow-sm transition-colors duration-500`}>
-                    <h3 className={`text-2xl font-bold mb-4 ${theme.colors.textMain}`}>Mi filosofía</h3>
-                    <p className={`${theme.colors.textSecondary} leading-relaxed`}>
-                        Me mueve la curiosidad intelectual y el deseo de entender cómo funcionan realmente los modelos. Creo de forma firme que como decía Thomas Garrity "Las funciones describen el mundo", pero con un giro, creo que "Las funciones y la estadística <em>modelan</em> el mundo". Me gusta entender <em>por qué</em> funcionan los modelos y verles el sentido. Me considero una persona constante y risueña, con vocación para explicar conceptos complejos y trabajar en equipo.
-                    </p>
-                </div>
-            </section>
-        );
-    };
-
-    const projectsData = [
-        {
-            id: 'proj-1',
-            category: 'Machine Learning / Small Data',
-            title: 'Predicción de Afinidad Cinematográfica',
-            tags: ['Python', 'APIs', 'AutoML', 'Feature Engineering'],
-            originTitle: 'El Origen',
-            teaser: 'Todo empezó con una web llamada Palomitacas...',
-            content: (
-                <React.Fragment>
-                    <p>Hace años empecé a usar una web llamada Palomitacas. La elegí porque tenía una función que me encantaba: me decía qué nota le daría yo a una película antes de verla. Un día, esa función desapareció sin explicación. En aquel entonces, yo estaba empezando en el análisis de datos y ML, así que intenté replicarla por mi cuenta. Fracasé estrepitosamente y lo dejé aparcado.</p>
-                    <p>Hace unos meses decidí retomar ese reto personal para ver cuánto había mejorado. Sabía que mi base de datos era ínfima y que extraer señal de ahí sería como intentar 'matar moscas a cañonazos', pero me daba igual: quería exprimir cada dato y ver hasta dónde podía llegar. No buscaba un modelo perfecto ni métricas de libro, buscaba una herramienta que me guiase.</p>
-                    <p>El resultado es un proyecto de Machine Learning en Python que integra APIs, técnicas de AutoML y modelos personalizados. Es una solución humilde, pero que funciona y cumple su objetivo. Espero volver a este dataset en el futuro con más conocimientos y ver cómo siguen evolucionando las métricas.</p>
-                </React.Fragment>
-            ),
-            techSheet: {
-                problem: 'Dataset personal muy pequeño y ruidoso (Small Data). Necesidad de predecir gustos subjetivos.',
-                solution: 'Pipeline de enriquecimiento con OMDb API e ingeniería de características personalizada (Positional Multi-Label Encoder).',
-                result: 'Modelo funcional robusto a diferentes semillas. Creación de métrica personalizada de estabilidad.'
-            },
-            githubUrl: 'https://github.com/goco41/ML-DS-para-Peliculas'
-        },
-        {
-            id: 'proj-2',
-            category: 'Finanzas Cuantitativas / Infraestructura',
-            title: 'Validación de Alphas en Trading',
-            tags: ['Numba', 'Backtesting Riguroso', 'CPCV', 'Estadística'],
-            originTitle: 'El Origen',
-            teaser: 'Un icono de MetaTrader lo cambió todo...',
-            content: (
-                <React.Fragment>
-                    <p>Prácticamente desde que empecé con Python, sabía que quería aplicarlo a las finanzas y los datos, pero era consciente de su complejidad. Por ello, decidí posponerlo para centrarme en mis estudios y la Selectividad. Todo cambió un día charlando con mi Jefe de Estudios; vi en su ordenador el icono de MetaTrader 5 y no pude evitar preguntar. Me explicó que tenía una estrategia automatizada para el EURUSD, pero que le había costado años desarrollarla y no pensaba desvelar su 'secreto' a nadie.</p>
-                    <p>Ese día volví a casa con un reto personal: yo también quería construir algo así. Él era alguien con carrera, máster y años de experiencia, pero aun así acepté el desafío. Pasé tardes, días y semanas enteras experimentando con Python, intercalando mis estudios con la búsqueda de esa idea ganadora y otros proyectos con python. Fracasé una y otra vez. Cada vez que creía tener algo que funcionaba, descubría rastros de data leakage o contaminación de datos. En cuanto corregía el error, la rentabilidad se esfumaba.</p>
-                    <p>Tras muchos intentos, dejé de intentar ignorar la dura realidad: me faltaban Alphas (señales predictivas reales). Sabía que 'si entra basura, sale basura'. Por eso, con la estadística en la mano, decidí centrarme en construir el pipeline que me ayudaría en el proceso.</p>
-                    <p>Emprendí este proyecto sabiendo que los indicadores convencionales están muy explotados y que las probabilidades de éxito inmediato eran bajas. Sin embargo, el resultado fue un éxito en lo que realmente importa: he creado una infraestructura robusta para testear ideas con rigor científico y separar, por fin, la suerte de la verdadera ventaja estadística. Ahora no solo tengo código; tengo un método sólido para validar cualquier Alpha que surja en el futuro.</p>
-                </React.Fragment>
-            ),
-            techSheet: {
-                problem: 'Alto riesgo de overfitting (p-hacking) al minar estrategias de trading.',
-                solution: 'Implementación de validación cruzada combinatoria (CPCV) y ajuste estadístico (Deflated Sharpe Ratio) usando Numba para alto rendimiento.',
-                result: 'Infraestructura capaz de rechazar estrategias falsas positivas y validar Alphas con rigor científico.'
-            },
-            githubUrl: 'https://github.com/goco41/ind-4-alphas/tree/main'
-        },
-        {
-            id: 'proj-3',
-            category: 'Deep Reinforcement Learning / Research',
-            title: 'Réplica Crítica: SRDDQN + TimesNet',
-            tags: ['PyTorch', 'Computer Vision', 'Research Reproduction'],
-            originTitle: 'El Origen',
-            teaser: '¿Por qué reinventar la rueda?',
-            content: (
-                <React.Fragment>
-                    <p>Tras dedicar mucho tiempo a intentar diseñar un sistema propio que fuese robusto, llegué a una conclusión lógica: existen investigadores y mentes brillantes que ya han publicado soluciones avanzadas. ¿Por qué no apoyarme en su experiencia? Así fue como, tras una búsqueda intensiva de literatura técnica, descubrí el paper SRDDQN.</p>
-                    <p>Lo que me cautivó de este estudio fue el uso de TimesNet. Me pareció fascinante encontrar una arquitectura que tratase las series temporales como imágenes mediante la Transformada de Fourier, que es, casualmente, uno de mis conceptos matemáticos favoritos. La posibilidad de aplicar visión por computador al análisis financiero, sumada a un mecanismo de auto-recompensa dinámica (donde la IA decide cómo premiar su propio aprendizaje), me motivó a implementar el proyecto por completo.</p>
-                    <p>El proceso fue exigente: desde el diseño de diagramas de flujo hasta la reconstrucción de los gráficos de rendimiento. Sin embargo, la réplica también me aportó una lección valiosa sobre el rigor en la investigación. El paper original reportaba rentabilidades y Ratios de Sharpe extraordinarios que, en mi implementación, no se alcanzaron.</p>
-                    <p>Al analizar las causas, identifiqué factores críticos: el paper utiliza un split simple de train y test, lo que facilita un sobreajuste (overfitting) a este último. Además, con casi total seguridad, el estudio omite el impacto del spread entre Bid y Ask. En mi réplica, al ser más estricto con los costes reales de ejecución, los resultados fueron más humildes, pero también más honestos y cercanos a la realidad del mercado. A pesar de la discrepancia en las métricas, este proyecto ha sido una de las experiencias de aprendizaje más enriquecedoras que he tenido.</p>
-                </React.Fragment>
-            ),
-            techSheet: {
-                problem: 'Reproducibilidad de papers académicos y adaptación a entornos de mercado realistas.',
-                solution: 'Implementación de TimesNet (Visión 2D de series temporales) y un agente de RL híbrido con simulación de costes reales.',
-                result: 'Réplica crítica que desveló sesgos en el estudio original y propuso un modelo más realista.'
-            },
-            githubUrl: 'https://github.com/goco41/SRDDQN4tr'
-        }
-    ];
-
-    const Projects = () => {
-        const [openProjectId, setOpenProjectId] = useState(null);
-        const { theme } = useTheme();
-
-        const toggleProject = (id) => {
-            setOpenProjectId(prev => (prev === id ? null : id));
-        };
-
-        return (
-            <section id="projects" className={`py-20 border-b ${theme.colors.border} transition-colors duration-500`}>
-                <div className="relative mb-12 text-center">
-                    <h2 className={`text-3xl md:text-4xl ${theme.colors.textMain} font-bold inline-block relative`}>
-                        Proyectos Destacados
-                        <span 
-                            className="block w-16 h-1 mx-auto mt-3 rounded" 
-                            style={{ backgroundColor: theme.colors.accent }}
-                        ></span>
-                    </h2>
-                </div>
-                {projectsData.map((project) => {
-                    const isOpen = openProjectId === project.id;
-                    const cardStyle = isOpen ? {
-                        borderColor: `${theme.colors.accent}80`,
-                        boxShadow: `0 10px 30px ${theme.colors.accent}26`,
-                    } : {};
-                    const cardClasses = isOpen
-                        ? `${theme.colors.surface}`
-                        : `${theme.colors.surface} ${theme.colors.border} hover:shadow-lg`;
-
-                    const leftColClasses = isOpen ? 'md:w-[58%] delay-0' : 'md:w-full delay-500';
-                    const rightColClasses = isOpen ? 'md:w-[38%] mt-0 delay-0 opacity-100' : 'md:w-full mt-2 delay-500 opacity-100';
-                    const textContentClasses = isOpen ? 'max-h-[1200px] opacity-100 mt-5 delay-500' : 'max-h-0 opacity-0 delay-0';
-                    const chevronClasses = isOpen ? 'rotate-180' : '';
-
-                    return (
-                        <div key={project.id} className={`border rounded-2xl p-6 md:p-10 mb-16 transition-all duration-300 ${cardClasses}`} style={cardStyle}>
-                            <div className={`border-b ${theme.colors.border} pb-5 mb-5`}>
-                                <span className="text-sm font-bold uppercase tracking-widest block mb-2" style={{ color: theme.colors.accent }}>{project.category}</span>
-                                <h3 className={`text-2xl md:text-3xl ${theme.colors.textMain} font-bold mb-3`}>{project.title}</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {project.tags.map(tag => (
-                                        <span key={tag} className="text-xs md:text-sm px-3 py-1 rounded border" style={{ backgroundColor: `${theme.colors.accent}1A`, color: theme.colors.accent, borderColor: `${theme.colors.accent}33` }}>{tag}</span>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="flex flex-col md:flex-row flex-wrap md:justify-between items-start gap-y-8 md:gap-y-0">
-                                <div className={`flex flex-col w-full transition-[width] duration-500 ease-in-out ${leftColClasses}`}>
-                                    <h4 className={`${theme.colors.textMain} text-lg mb-5 flex items-center gap-2 border-l-4 pl-3 font-semibold`} style={{ borderColor: theme.colors.accent }}>
-                                        <i className={`fas fa-book-open ${theme.colors.textSecondary}`}></i> {project.originTitle}
-                                    </h4>
-                                    <div onClick={() => toggleProject(project.id)} className="cursor-pointer font-semibold flex items-center gap-2 transition-colors group" style={{ color: theme.colors.accent }}>
-                                        <span className={`${theme.colors.textSecondary} group-hover:${theme.colors.textMain} text-base md:text-lg transition-colors`}>{project.teaser}</span>
-                                        <i className={`fas fa-chevron-down transition-transform duration-500 ${chevronClasses}`}></i>
-                                    </div>
-                                    <div className={`overflow-hidden transition-all duration-500 ease-in-out ${textContentClasses}`}>
-                                        <div className={`${theme.colors.textSecondary} text-justify text-base leading-relaxed space-y-4 pt-5`}>{project.content}</div>
-                                    </div>
-                                </div>
-                                <div className={`w-full transition-[width,margin,opacity] duration-500 ease-in-out ${rightColClasses}`}>
-                                    <div className={`w-full pt-6 border-t ${theme.colors.border} md:pt-0 md:border-t-0`}>
-                                        <h4 className={`${theme.colors.textMain} text-lg mb-5 flex items-center gap-2 border-l-4 pl-3 font-semibold`} style={{ borderColor: theme.colors.accent }}>
-                                            <i className={`fas fa-microchip ${theme.colors.textSecondary}`}></i> Ficha Técnica
-                                        </h4>
-                                        <ul className="space-y-4">
-                                            <li className={`grid grid-cols-[25px_1fr] ${theme.colors.textSecondary} text-sm md:text-base`}><i className="fas fa-exclamation-circle text-amber-500 mt-1.5"></i><div><span className={`${theme.colors.textMain} font-bold block`}>Problema:</span>{project.techSheet.problem}</div></li>
-                                            <li className={`grid grid-cols-[25px_1fr] ${theme.colors.textSecondary} text-sm md:text-base`}><i className="fas fa-tools mt-1.5" style={{ color: theme.colors.accent }}></i><div><span className={`${theme.colors.textMain} font-bold block`}>Solución:</span>{project.techSheet.solution}</div></li>
-                                            <li className={`grid grid-cols-[25px_1fr] ${theme.colors.textSecondary} text-sm md:text-base`}><i className="fas fa-check-circle text-emerald-500 mt-1.5"></i><div><span className={`${theme.colors.textMain} font-bold block`}>Resultado:</span>{project.techSheet.result}</div></li>
-                                        </ul>
-                                        <a href={project.githubUrl} target="_blank" rel="noreferrer" className="mt-6 inline-block px-5 py-2 border-2 text-sm rounded-full hover:bg-white/5 transition-colors font-semibold" style={{ borderColor: theme.colors.accent, color: theme.colors.accent }}>Ver en GitHub</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
-            </section>
-        );
-    };
-
-    const CV = () => {
-        const { theme } = useTheme();
-        return (
-            <section id="cv" className={`py-20 border-b ${theme.colors.border} transition-colors duration-500`}>
-                <div className="relative mb-12 text-center">
-                    <h2 className={`text-3xl md:text-4xl ${theme.colors.textMain} font-bold inline-block relative`}>
-                        Curriculum Vitae
-                        <span className="block w-16 h-1 mx-auto mt-3 rounded" style={{ backgroundColor: theme.colors.accent }}></span>
-                    </h2>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div>
-                        <h3 className={`text-2xl ${theme.colors.textMain} font-bold mb-8`}>Formación Académica</h3>
-                        <div className={`${theme.colors.surface} border ${theme.colors.border} rounded-2xl p-8 mb-6 shadow-sm transition-colors duration-500`}>
-                            <div className={`border-l-2 ${theme.colors.border} pl-5`}>
-                                <span className="font-bold text-sm block mb-1" style={{ color: theme.colors.accent }}>2025 – 2029 (En curso)</span>
-                                <div className={`${theme.colors.textMain} text-lg font-bold mb-1`}>Grado en Análisis Económico</div>
-                                <div className={`${theme.colors.textSecondary} text-sm`}>Universidad Pablo de Olavide (UPO)</div>
-                                <ul className={`list-disc pl-4 mt-3 ${theme.colors.textSecondary} text-xs md:text-sm space-y-1`}>
-                                    <li>Estudiante de 1º Curso</li>
-                                    <li>Delegado de clase (2025-2026)</li>
-                                    <li>Miembro activo del club de debate</li>
-                                </ul>
-                                <p className={`${theme.colors.textSecondary} text-xs md:text-sm mt-4 italic leading-relaxed border-t ${theme.colors.border} pt-3`}>
-                                    He complementado mi formación con aprendizaje autodidacta en Python, Machine Learning y finanzas cuantitativas, aplicándolo en proyectos reales.
-                                </p>
-                            </div>
-                        </div>
-                        <h3 className={`text-2xl ${theme.colors.textMain} font-bold mb-8 mt-12`}>Idiomas</h3>
-                        <div className={`${theme.colors.surface} border ${theme.colors.border} rounded-2xl p-8 shadow-sm transition-colors duration-500`}>
-                            <ul className={`space-y-3 ${theme.colors.textSecondary}`}>
-                                <li className="flex items-center gap-3"><i className="fas fa-language" style={{ color: theme.colors.accent }}></i><span><strong>Inglés B2</strong> (Certificado EOI)</span></li>
-                                <li className="flex items-center gap-3"><i className="fas fa-language" style={{ color: theme.colors.accent }}></i><span><strong>Español</strong> (Nativo)</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 className={`text-2xl ${theme.colors.textMain} font-bold mb-8`}>Stack Tecnológico</h3>
-                        <div className={`${theme.colors.surface} border ${theme.colors.border} rounded-2xl p-8 mb-8 shadow-sm transition-colors duration-500`}>
-                            <div className="mb-6">
-                                <h4 className="font-bold text-sm mb-3" style={{ color: theme.colors.accent }}>Lenguaje & Librerías</h4>
-                                <div className="flex flex-wrap gap-3">
-                                    {['Python (Avanzado)', 'Pandas / NumPy', 'Scikit-learn', 'PyTorch', 'Numba'].map(tech => (
-                                        <span key={tech} className={`${theme.isDark ? 'bg-white/5' : 'bg-gray-100'} border ${theme.colors.border} px-4 py-2 rounded-full text-sm ${theme.colors.textSecondary}`}>{tech}</span>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="mb-6">
-                                <h4 className="font-bold text-sm mb-3" style={{ color: theme.colors.accent }}>Data Science & ML</h4>
-                                <div className="flex flex-wrap gap-3">
-                                    {['Feature Engineering', 'Series Temporales', 'AutoML', 'Deep Reinforcement Learning'].map(tech => (
-                                        <span key={tech} className={`${theme.isDark ? 'bg-white/5' : 'bg-gray-100'} border ${theme.colors.border} px-4 py-2 rounded-full text-sm ${theme.colors.textSecondary}`}>{tech}</span>
-                                    ))}
-                                </div>
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-sm mb-3" style={{ color: theme.colors.accent }}>Estadística & Validación</h4>
-                                <div className="flex flex-wrap gap-3">
-                                    {['Backtesting Riguroso', 'Estadística Inferencial', 'Validación Estadística'].map(tech => (
-                                        <span key={tech} className={`${theme.isDark ? 'bg-white/5' : 'bg-gray-100'} border ${theme.colors.border} px-4 py-2 rounded-full text-sm ${theme.colors.textSecondary}`}>{tech}</span>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                        <h3 className={`text-2xl ${theme.colors.textMain} font-bold mb-8 mt-12`}>Certificaciones</h3>
-                        <div className={`${theme.colors.surface} border ${theme.colors.border} rounded-2xl p-8 space-y-6 shadow-sm transition-colors duration-500`}>
-                            <div className={`border-l-2 ${theme.colors.border} pl-5`}><span className="font-bold text-sm block mb-1" style={{ color: theme.colors.accent }}>DeepLearning.AI</span><div className={`${theme.colors.textMain} text-lg font-bold mb-1`}>Deep Learning Specialization</div><a href="https://www.coursera.org/account/accomplishments/specialization/7ND7TBWJMWN6" target="_blank" rel="noreferrer" className="text-sm hover:underline" style={{ color: theme.colors.accent }}>Ver Credencial</a></div>
-                            <div className={`border-l-2 ${theme.colors.border} pl-5`}><span className="font-bold text-sm block mb-1" style={{ color: theme.colors.accent }}>Stanford University</span><div className={`${theme.colors.textMain} text-lg font-bold mb-1`}>Machine Learning Specialization</div><a href="https://www.coursera.org/account/accomplishments/specialization/EHJNK64CH2KH" target="_blank" rel="noreferrer" className="text-sm hover:underline" style={{ color: theme.colors.accent }}>Ver Credencial</a></div>
-                            <div className={`border-l-2 ${theme.colors.border} pl-5`}><span className="font-bold text-sm block mb-1" style={{ color: theme.colors.accent }}>Yale University</span><div className={`${theme.colors.textMain} text-lg font-bold mb-1`}>Financial Markets</div><a href="https://www.coursera.org/account/accomplishments/verify/GXI9YC44R2E2" target="_blank" rel="noreferrer" className="text-sm hover:underline" style={{ color: theme.colors.accent }}>Ver Credencial</a></div>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex flex-col sm:flex-row justify-center items-center gap-5 mt-12">
-                    <a href="assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf" download className="inline-flex items-center justify-center gap-2 px-8 py-3 text-white font-semibold rounded-full shadow-lg transition-transform hover:-translate-y-1 w-full sm:w-auto" style={{ backgroundColor: theme.colors.accent }}><i className="fas fa-file-pdf"></i> Descargar Curriculum</a>
-                    <a href="assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-8 py-3 border-2 font-semibold rounded-full hover:bg-white/10 transition-transform hover:-translate-y-1 w-full sm:w-auto" style={{ borderColor: theme.colors.accent, color: theme.colors.accent }}><i className="fas fa-eye"></i> Visualizar Curriculum</a>
-                </div>
-            </section>
-        );
-    };
-
-    const Footer = () => {
-        const { theme } = useTheme();
-        return (
-            <footer id="contact" className={`py-16 ${theme.colors.footerBg} text-center border-t border-white/5 transition-colors duration-500`}>
-                <div className="flex justify-center gap-8 text-2xl text-white mb-8">
-                    <a href="mailto:gonzalopilar2005@gmail.com" className="transition-colors" style={{ color: 'white' }} onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accent} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}><i className="fas fa-envelope"></i></a>
-                    <a href="https://github.com/goco41" target="_blank" rel="noreferrer" className="transition-colors" style={{ color: 'white' }} onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accent} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}><i className="fab fa-github"></i></a>
-                    <a href="#" className="transition-colors" style={{ color: 'white' }} onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accent} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}><i className="fab fa-linkedin"></i></a>
-                </div>
-                <p className="text-gray-300 text-lg mb-2">gonzalopilar2005@gmail.com</p>
-                <p className="text-gray-500 text-sm">Gonzalo Pilar Sánchez &copy; 2026 | Sevilla, España</p>
-            </footer>
-        );
-    };
-
-    const App = () => {
-        return (
-            <ThemeProvider>
-                <ThemeSwitcher />
-                <Navbar />
-                <main className="max-w-[1100px] mx-auto px-5">
-                    <Hero />
-                    <Philosophy />
-                    <Projects />
-                    <CV />
-                </main>
-                <Footer />
-            </ThemeProvider>
-        );
-    };
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-</script>
-</body>
+      createRoot(document.getElementById('root')).render(<App />);
+    </script>
+  </body>
 </html>
