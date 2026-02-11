@@ -454,10 +454,26 @@
       const CertificationsAndSkills = () => {
         const { t, lang } = useContext(LanguageContext);
         const certs = [
-          { name: "Deep Learning Specialization", issuer: "DeepLearning.AI", logo: "https://upload.wikimedia.org/wikipedia/commons/e/e5/DeepMind_New_Logo.svg", link: "https://www.coursera.org/account/accomplishments/specialization/7ND7TBWJMWN6" },
-          { name: "Machine Learning Specialization", issuer: "Stanford University", logo: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Stanford_S_logo.svg", link: "https://www.coursera.org/account/accomplishments/specialization/EHJNK64CH2KH" },
-          { name: "Financial Markets", issuer: "Yale University", logo: "https://upload.wikimedia.org/wikipedia/commons/0/07/Yale_University_Shield_1.svg", link: "https://www.coursera.org/account/accomplishments/verify/GXI9YC44R2E2" }
-        ];
+  { 
+    name: "Deep Learning Specialization", 
+    issuer: "DeepLearning.AI", 
+    logo: "https://learn.deeplearning.ai/assets/dlai-logo.png", 
+    link: "https://www.coursera.org/account/accomplishments/specialization/7ND7TBWJMWN6" 
+  },
+  { 
+    name: "Machine Learning Specialization", 
+    issuer: "Stanford University", 
+    logo: "https://upload.wikimedia.org/wikipedia/commons/6/68/Stanford_logo.png", 
+    link: "https://www.coursera.org/account/accomplishments/specialization/EHJNK64CH2KH" 
+  },
+  { 
+    name: "Financial Markets", 
+    issuer: "Yale University", 
+    logo: "https://upload.wikimedia.org/wikipedia/commons/2/20/Yale_Logo.png", 
+    link: "https://www.coursera.org/account/accomplishments/verify/GXI9YC44R2E2" 
+  }
+]
+;
 
         return (
           <section id="expertise" className="bg-brand-cream py-32 px-6">
@@ -468,7 +484,18 @@
              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
                {certs.map((c, i) => (
                  <a href={c.link} target="_blank" key={i} className="cert-card group relative min-h-[350px] border border-brand-blue/10 rounded-2xl overflow-hidden flex flex-col justify-between p-8 hover:border-brand-accent/40 transition-all duration-500 bg-white/50">
-                    <div className="bg-layer absolute inset-0 flex items-center justify-center pointer-events-none"><img src={c.logo} className="w-32 h-32 object-contain" alt={c.issuer} /></div>
+                    <div className="bg-layer absolute inset-0 flex items-center justify-center pointer-events-none"><img
+  src={c.logo}
+  className={`object-contain -translate-y-[25px] ${
+    c.issuer === "DeepLearning.AI"
+      ? "w-64 h-64"
+      : c.issuer === "Stanford University"
+      ? "w-48 h-48"
+      : "w-32 h-32"
+  }`}
+  alt={c.issuer}
+/>
+</div>
                     <div className="relative z-10 flex justify-between items-start"><span className="font-mono text-[10px] uppercase text-brand-blue/40">Credential</span><ExternalLink size={16} className="text-brand-accent opacity-0 group-hover:opacity-100" /></div>
                     <div className="relative z-10"><span className="block font-mono text-xs text-brand-accent mb-2">{c.issuer}</span><h3 className="text-2xl font-bold text-brand-blue leading-tight">{c.name}</h3></div>
                  </a>
