@@ -155,14 +155,89 @@
           cvDownload: "Download CV",
           cvView: "View CV",
           projects: {
-            section: "01 / Portfolio", title: ["Featured", "Projects"], cta: "Swipe to explore",
-            items: [
-              { id: "01", title: "Cine ML", sub: "Python · AutoML", link: "https://github.com/goco41/ML-DS-para-Peliculas", problem: "Disappearance of personalized recommendation tools.", solution: "ML pipeline integrating external APIs and AutoML to predict affinity.", usage: "User experience personalization in media libraries.", storyTitle: "The Palomitacas Challenge", story: `Years ago I used a website that predicted my rating for movies. When it disappeared, I decided to replicate it. The result is a functional solution that squeezes signal from tiny datasets.` },
-              { id: "02", title: "Alphas", sub: "Quant Finance", link: "https://github.com/goco41/ind-4-alphas/tree/main", problem: "Fragility and data leakage in algorithmic trading strategies.", solution: "Robust statistical validation framework and rigorous backtesting.", usage: "Validation of predictive signals before execution in real markets.", storyTitle: "The Search for Alpha", story: `Inspired by a chat with my Head of Studies, I accepted the challenge of building an automated system. I built a scientific validation framework that separates luck from true advantage.` },
-              { id: "03", title: "SRDDQN Replica", sub: "Deep RL", link: "https://github.com/goco41/SRDDQN4tr", problem: "Academic papers with unrealistic metrics due to omission of spread.", solution: "Implementation of TimesNet architecture (Fourier) with real costs.", usage: "Feasibility assessment of Deep Learning models in production.", storyTitle: "Rigor vs. Academic Hype", story: `I was fascinated by the use of the Fourier Transform to treat time series as images. By replicating SRDDQN, I discovered that market reality reduces the originally reported profits.` }
-            ],
-            labels: { problem: "Problem", solution: "Solution", usage: "Business Value", storyBtn: "Read Origin", linkBtn: "GitHub" }
-          },
+  section: "01 / Portfolio",
+  title: ["Featured", "Projects"],
+  cta: "Swipe to explore",
+  items: [
+    {
+      id: "01",
+      title: "Cine ML",
+      sub: "Python · AutoML",
+      link: "https://github.com/goco41/ML-DS-para-Peliculas",
+      problem: "Disappearance of personalized recommendation tools.",
+      solution: "ML pipeline integrating external APIs and AutoML to predict affinity.",
+      usage: "User experience personalization in media libraries.",
+      storyTitle: "The Palomitacas Challenge",
+      story: `Years ago, I started using a website called Palomitacas. I chose it because it had a feature I absolutely loved: it predicted the rating I would personally give a movie before I watched it. One day, that feature disappeared without explanation.
+
+At that time, I was just beginning in data analysis and machine learning, so I tried to replicate it on my own. I failed miserably and ended up putting the idea aside.
+
+A few months ago, I decided to revisit that personal challenge to see how much I had improved. I knew my dataset was tiny and that extracting meaningful signal from it would be like “killing flies with a cannon,” but I didn’t care. I wanted to squeeze every bit of information possible and see how far I could push it.
+
+I wasn’t looking for a perfect model or textbook metrics I wanted a tool that could guide me.
+
+The result is a Machine Learning project in Python that integrates external APIs, AutoML techniques, and custom models. It is a humble solution, but it works and achieves its goal. I hope to return to this dataset in the future with more knowledge and see how the metrics continue to evolve.`
+    },
+    {
+      id: "02",
+      title: "Alphas",
+      sub: "Quant Finance",
+      link: "https://github.com/goco41/ind-4-alphas/tree/main",
+      problem: "Fragility and data leakage in algorithmic trading strategies.",
+      solution: "Robust statistical validation framework and rigorous backtesting.",
+      usage: "Validation of predictive signals before execution in real markets.",
+      storyTitle: "The Search for Alpha",
+      story: `Almost from the moment I started with Python, I knew I wanted to apply it to finance and data but I was fully aware of the field’s complexity. Because of that, I decided to postpone it and focus on my studies and university entrance exams.
+
+Everything changed one day while talking with my Head of Studies. I noticed the MetaTrader 5 icon on his computer and couldn’t resist asking about it. He explained that he had an automated strategy for EURUSD, but that it had taken him years to develop and he had no intention of revealing his “secret” to anyone.
+
+That day I went home with a personal challenge: I wanted to build something like that too. He was someone with a degree, a master’s, and years of experience and yet I accepted the challenge.
+
+I spent afternoons, days, and entire weeks experimenting with Python, balancing my studies with the search for that winning idea and other side projects. I failed over and over again. Every time I thought I had something that worked, I discovered traces of data leakage or contamination. The moment I corrected the issue, profitability vanished.
+
+After many attempts, I stopped trying to ignore the harsh reality: I lacked real Alphas (genuine predictive signals). I understood clearly that “garbage in, garbage out.”
+
+So, with statistics in hand, I decided to focus on building the pipeline that would support the process.
+
+I undertook this project knowing that conventional indicators are heavily exploited and that the probability of immediate success was low. However, the result was a success in what truly matters: I built a robust infrastructure to test ideas with scientific rigor and finally separate luck from real statistical edge.
+
+Now I don’t just have code I have a solid method to validate any Alpha that emerges in the future.`
+    },
+    {
+      id: "03",
+      title: "SRDDQN Replica",
+      sub: "Deep RL",
+      link: "https://github.com/goco41/SRDDQN4tr",
+      problem: "Academic papers with unrealistic metrics due to omission of spread.",
+      solution: "Implementation of TimesNet architecture (Fourier) with real execution costs.",
+      usage: "Feasibility assessment of Deep Learning models in production environments.",
+      storyTitle: "Rigor vs. Academic Hype",
+      story: `After dedicating a significant amount of time to designing a robust system of my own, I reached a logical conclusion: there are brilliant researchers who have already published advanced solutions. Why not build upon their work?
+
+That’s how, after an intensive search through technical literature, I discovered the SRDDQN paper.
+
+What captivated me about this study was its use of TimesNet. I found it fascinating that the architecture treated time series as images using the Fourier Transform which happens to be one of my favorite mathematical concepts. The possibility of applying computer vision techniques to financial analysis, combined with a dynamic self-reward mechanism (where the AI decides how to reward its own learning process), motivated me to implement the project in full.
+
+The process was demanding: from designing flow diagrams to reconstructing performance charts. However, the replication also taught me a valuable lesson about rigor in research.
+
+The original paper reported extraordinary returns and Sharpe Ratios that I was unable to replicate.
+
+When analyzing the causes, I identified critical factors: the paper used a simple train-test split, which facilitates overfitting to the test set. Additionally, it almost certainly omitted the impact of the Bid-Ask spread.
+
+In my implementation, by being stricter with real execution costs, the results were more modest but also more honest and closer to actual market conditions.
+
+Despite the discrepancy in performance metrics, this project has been one of the most enriching learning experiences I have ever had.`
+    }
+  ],
+  labels: {
+    problem: "Problem",
+    solution: "Solution",
+    usage: "Business Value",
+    storyBtn: "Read Origin",
+    linkBtn: "GitHub"
+  }
+}
+,
           edu: {
             section: "02 / Career", title: ["Education", "& Leadership"],
             items: [
@@ -359,7 +434,7 @@
           {activeStory && (
             <div className="fixed inset-0 z-[100] pointer-events-auto">
               <div onClick={() => setActiveStory(null)} className="absolute inset-0 bg-brand-dark/60 backdrop-blur-sm"></div>
-              <div className="absolute top-0 right-0 h-full w-full md:w-[600px] bg-brand-cream text-brand-blue shadow-2xl p-8 md:p-12 overflow-y-auto">
+              <div data-lenis-prevent className="absolute top-0 right-0 h-full w-full md:w-[600px] bg-brand-cream text-brand-blue shadow-2xl p-8 md:p-12 overflow-y-auto">
                 <button onClick={() => setActiveStory(null)} className="absolute top-8 right-8 w-10 h-10 border border-brand-blue/20 rounded-full flex items-center justify-center hover:bg-brand-blue hover:text-brand-cream transition-colors"><X size={18} /></button>
                 <div className="pt-12">
                    <span className="font-mono text-xs uppercase tracking-widest text-brand-accent mb-4 block">{t.projects.labels.storyBtn}</span>
