@@ -7,7 +7,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
+    3
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -354,7 +354,7 @@ Despite the discrepancy in performance metrics, this project has been one of the
           <section className="relative h-screen w-full overflow-hidden flex flex-col justify-end pb-20 px-6 bg-brand-blue text-brand-cream">
             <div className="absolute inset-0 opacity-40"><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" className="w-full h-full object-cover grayscale mix-blend-overlay" /></div>
             <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/20 to-brand-blue/90"></div>
-            <div className="relative z-10 w-full max-w-[90vw] mx-auto">
+            <div className="relative z-10 w-full max-w-[90vw] max-h-[720px] mx-auto">
               <div ref={titleRef} className="flex flex-col">
                 {t.hero.lines.map((line, i) => (<div key={i} className="overflow-hidden"><h1 className="line-inner text-[11vw] leading-[0.8] font-bold uppercase tracking-tightest mix-blend-screen">{line}</h1></div>))}
               </div>
