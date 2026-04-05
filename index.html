@@ -10,7 +10,7 @@
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- Scripts -->
@@ -31,12 +31,28 @@
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
               mono: ['JetBrains Mono', 'monospace'],
+              figtree: ['Figtree', 'sans-serif'],
             },
             letterSpacing: {
               'tighter': '-0.04em',
               'tightest': '-0.06em',
               'widest': '0.2em',
             },
+            animation: {
+              'spin-slow': 'spin 20s linear infinite',
+              'marquee': 'marquee 25s linear infinite',
+              'float': 'float 10s ease-in-out infinite',
+            },
+            keyframes: {
+              marquee: {
+                '0%': { transform: 'translateX(0%)' },
+                '100%': { transform: 'translateX(-50%)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0) translateX(0)' },
+                '50%': { transform: 'translateY(-20px) translateX(10px)' },
+              }
+            }
           }
         }
       }
@@ -51,10 +67,64 @@
       .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
       .lenis.lenis-stopped { overflow: hidden; }
       body.no-scroll { overflow: hidden !important; }
+      
+      /* Grid Patterns */
+      .bg-grid {
+        background-size: 40px 40px;
+        background-image: 
+          linear-gradient(to right, rgba(10, 18, 69, 0.04) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(10, 18, 69, 0.04) 1px, transparent 1px);
+      }
+      .bg-grid-dark {
+        background-size: 40px 40px;
+        background-image: 
+          linear-gradient(to right, rgba(242, 240, 235, 0.04) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(242, 240, 235, 0.04) 1px, transparent 1px);
+      }
+
       .cert-card img { filter: grayscale(100%) brightness(0.8) contrast(1.2); mix-blend-mode: multiply; opacity: 0.3; transition: all 0.5s ease; }
       .cert-card:hover img { opacity: 0.6; filter: grayscale(0%) brightness(1); }
       .neural-node { transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
       .neural-line { transition: all 0.3s ease; }
+      
+      .circular-text {
+        animation: spin 15s linear infinite;
+        transform-origin: center;
+      }
+
+      .stroke-text {
+        letter-spacing: normal !important;
+      }
+
+      /* Acordeón Custom (Sidequests) */
+      .accordion-grid {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.5s ease-in-out;
+      }
+      .sidequest-item:hover .accordion-grid {
+        grid-template-rows: 1fr;
+      }
+      .accordion-text {
+        opacity: 0;
+        transition: opacity 0.4s ease 0.1s;
+      }
+      .sidequest-item:hover .accordion-text {
+        opacity: 1;
+      }
+      .sidequest-indicator {
+        background-color: #0A1245;
+        transition: background-color 0.3s ease;
+      }
+      .sidequest-item:hover .sidequest-indicator {
+        background-color: #2A45C2;
+      }
+      
+      /* Hero text reveal container */
+      .reveal-overflow {
+        overflow: hidden;
+        display: block;
+      }
     </style>
     
     <script type="importmap">
@@ -73,11 +143,10 @@
     <script type="text/babel" data-type="module" data-presets="react">
       import React, { useState, useEffect, useRef, useLayoutEffect, createContext, useContext } from 'react';
       import { createRoot } from 'react-dom/client';
-      import { ArrowRight, ArrowUpRight, Github, Mail, MapPin, X, BookOpen, ExternalLink, Cpu, Database, TrendingUp, Brain, BarChart3, Terminal, Menu } from 'lucide-react';
+      import { ArrowRight, ArrowUpRight, Github, Mail, MapPin, X, BookOpen, ExternalLink, Cpu, Database, TrendingUp, Brain, BarChart3, Terminal, Menu, Activity } from 'lucide-react';
 
       gsap.registerPlugin(ScrollTrigger);
 
-      // --- TRANSLATIONS & CONSTANTS ---
       const CV_PATH = "assets/cv/CV-Gonzalo-Pilar-Sánchez-2026.pdf";
 
       const TRANSLATIONS = {
@@ -88,171 +157,144 @@
             { label: 'Trayectoria', id: '#trajectory' },
             { label: 'Expertise', id: '#expertise' }
           ],
-          hero: { lines: ['Quantitative', '& Machine', 'Learning', 'Economics'], desc: ['Estudiante de Análisis Económico (UPO).', 'Especializado en Finanzas Quant & Deep Learning.'] },
+          hero: { 
+            title1: "Economía", 
+            title2: "Cuantitativa", 
+            title3: "& Machine Learning",
+            desc: ['Estudiante de Análisis Económico (UPO).', 'Especializado en Finanzas Quant & Deep Learning.'] 
+          },
           intro: "Estudiante de Análisis Económico apasionado por la intersección entre la teoría económica y la inteligencia artificial. Enfocado en extraer señal de datos financieros complejos mediante modelos avanzados.",
           githubBtn: "Perfil GitHub",
           cvDownload: "Descargar CV",
           cvView: "Visualizar CV",
+          marquee: "MACHINE LEARNING • ALGORITHMIC TRADING • DEEP LEARNING • ECONOMETRICS • PYTHON • DATA SCIENCE • QUANTITATIVE FINANCE • ",
           projects: {
             section: "01 / Portfolio", title: ["Proyectos", "Destacados"], cta: "Desliza para explorar",
             items: [
-              { 
-                id: "01", 
-                title: "Cine ML", 
-                sub: "Python · AutoML", 
-                link: "https://github.com/goco41/ML-DS-para-Peliculas", 
-                problem: "Desaparición de herramientas de recomendación personalizadas.", 
-                solution: "Pipeline de ML integrando APIs externas y AutoML para predecir afinidad.", 
-                usage: "Personalización de experiencia de usuario en bibliotecas de medios.", 
-                storyTitle: "El Reto de Palomitacas", 
-                story: `Hace años empecé a usar una web llamada Palomitacas. La elegí porque tenía una función que me encantaba: me decía qué nota le daría yo a una película antes de verla. Un día, esa función desapareció sin explicación. En aquel entonces, yo estaba empezando en el análisis de datos y ML, así que intenté replicarla por mi cuenta. Fracasé estrepitosamente y lo dejé aparcado.\n\nHace unos meses decidí retomar ese reto personal para ver cuánto había mejorado. Sabía que mi base de datos era ínfima y que extraer señal de ahí sería como intentar 'matar moscas a cañonazos', pero me daba igual: quería exprimir cada dato y ver hasta dónde podía llegar. No buscaba un modelo perfecto ni métricas de libro, buscaba una herramienta que me guiase.\n\nEl resultado es un proyecto de Machine Learning en Python que integra APIs, técnicas de AutoML y modelos personalizados. Es una solución humilde, pero que funciona y cumple su objetivo. Espero volver a este dataset en el futuro con más conocimientos y ver cómo siguen evolucionando las métricas.` 
-              },
-              { 
-                id: "02", 
-                title: "Alphas", 
-                sub: "Finanzas Quant", 
-                link: "https://github.com/goco41/ind-4-alphas/tree/main", 
-                problem: "Fragilidad y data leakage en estrategias de trading algorítmico.", 
-                solution: "Framework robusto de validación estadística y backtesting riguroso.", 
-                usage: "Validación de señales predictivas antes de ejecución en mercado real.", 
-                storyTitle: "La Búsqueda de Alpha", 
-                story: `Prácticamente desde que empecé con Python, sabía que quería aplicarlo a las finanzas y los datos, pero era consciente de su complejidad. Por ello, decidí posponerlo para centrarme en mis estudios y la Selectividad. Todo cambió un día charlando con mi Jefe de Estudios; vi en su ordenador el icono de MetaTrader 5 y no pude evitar preguntar. Me explicó que tenía una estrategia automatizada para el EURUSD, pero que le había costado años desarrollarla y no pensaba desvelar su 'secreto' a nadie.\n\nEse día volví a casa con un reto personal: yo también quería construir algo así. Él era alguien con carrera, máster y años de experiencia, pero aun así acepté el desafío. Pasé tardes, días y semanas enteras experimentando con Python, intercalando mis estudios con la búsqueda de esa idea ganadora y otros proyectos con python. Fracasé una y otra vez. Cada vez que creía tener algo que funcionaba, descubría rastros de data leakage o contaminación de datos. En cuanto corregía el error, la rentabilidad se esfumaba.\n\nTras muchos intentos, dejé de intentar ignorar la dura realidad: me faltaban Alphas (señales predictivas reales). Sabía que 'si entra basura, sale basura'. Por eso, con la estadística en la mano, decidí centrarme en construir el pipeline que me ayudaría en el proceso.\n\nEmprendí este proyecto sabiendo que los indicadores convencionales están muy explotados y que las probabilidades de éxito inmediato eran bajas. Sin embargo, el resultado fue un éxito en lo que realmente importa: he creado una infraestructura robusta para testear ideas con rigor científico y separar, por fin, la suerte de la verdadera ventaja estadística. Ahora no solo tengo código; tengo un método sólido para validar cualquier Alpha que surja en el futuro.` 
-              },
-              { 
-                id: "03", 
-                title: "Réplica SRDDQN", 
-                sub: "Deep RL", 
-                link: "https://github.com/goco41/SRDDQN4tr", 
-                problem: "Papers académicos con métricas irreales por omisión de spread.", 
-                solution: "Implementación de arquitectura TimesNet (Fourier) con costes reales.", 
-                usage: "Evaluación de viabilidad de modelos de Deep Learning en producción.", 
-                storyTitle: "Rigor vs. Hype Académico", 
-                story: `Tras dedicar mucho tiempo a intentar diseñar un sistema propio que fuese robusto, llegué a una conclusión lógica: existen investigadores y mentes brillantes que ya han publicado soluciones avanzadas. ¿Por qué no apoyarme en su experiencia? Así fue como, tras una búsqueda intensiva de literatura técnica, descubrí el paper SRDDQN.\n\nLo que me cautivó de este estudio fue el uso de TimesNet. Me pareció fascinante encontrar una arquitectura que tratase las series temporales como imágenes mediante la Transformada de Fourier, que es, casualmente, uno de mis conceptos matemáticos favoritos. La posibilidad de aplicar visión por computador al análisis financiero, sumada a un mecanismo de auto-recompensa dinámica (donde la IA decide cómo premiar su propio aprendizaje), me motivó a implementar el proyecto por completo.\n\nEl proceso fue exigente: desde el diseño de diagramas de flujo hasta la reconstrucción de los gráficos de rendimiento. Sin embargo, la réplica también me aportó una lección valiosa sobre el rigor en la investigación. El paper original reportaba rentabilidades y Ratios de Sharpe extraordinarios que, en mi implementación, no se alcanzaron.\n\nAl analizar las causas, identifiqué factores críticos: el paper utiliza un split simple de train y test, lo que facilita un sobreajuste (overfitting) a este último. Además, con casi total seguridad, el estudio omite el impacto del spread entre Bid y Ask. En mi réplica, al ser más estricto con los costes reales de ejecución, los resultados fueron más humildes, pero también más honestos y cercanos a la realidad del mercado. A pesar de la discrepancia en las métricas, este proyecto ha sido una de las experiencias de aprendizaje más enriquecedoras que he tenido.` 
-              }
+              { id: "01", title: "Cine ML", sub: "Python · AutoML", link: "https://github.com/goco41/ML-DS-para-Peliculas", problem: "Desaparición de herramientas de recomendación personalizadas.", solution: "Pipeline de ML integrando APIs externas y AutoML para predecir afinidad.", usage: "Personalización de experiencia de usuario en bibliotecas de medios.", storyTitle: "El Reto de Palomitacas", story: `Hace años empecé a usar una web llamada Palomitacas. La elegí porque tenía una función que me encantaba: me decía qué nota le daría yo a una película antes de verla. Un día, esa función desapareció sin explicación. En aquel entonces, yo estaba empezando en el análisis de datos y ML, así que intenté replicarla por mi cuenta. Fracasé estrepitosamente y lo dejé aparcado.\n\nHace unos meses decidí retomar ese reto personal para ver cuánto había mejorado. Sabía que mi base de datos era ínfima y que extraer señal de ahí sería como intentar 'matar moscas a cañonazos', pero me daba igual: quería exprimir cada dato y ver hasta dónde podía llegar. No buscaba un modelo perfecto ni métricas de libro, buscaba una herramienta que me guiase.\n\nEl resultado es un proyecto de Machine Learning en Python que integra APIs, técnicas de AutoML y modelos personalizados. Es una solución humilde, pero que funciona y cumple su objetivo. Espero volver a este dataset en el futuro con más conocimientos y ver cómo siguen evolucionando las métricas.` },
+              { id: "02", title: "Alphas", sub: "Finanzas Quant", link: "https://github.com/goco41/ind-4-alphas", problem: "Fragilidad y data leakage en estrategias de trading algorítmico.", solution: "Framework robusto de validación estadística y backtesting riguroso.", usage: "Validación de señales predictivas antes de ejecución en mercado real.", storyTitle: "La Búsqueda de Alpha", story: `Prácticamente desde que empecé con Python, sabía que quería aplicarlo a las finanzas y los datos, pero era consciente de su complejidad. Por ello, decidí posponerlo para centrarme en mis estudios y la Selectividad. Todo cambió un día charlando con mi Jefe de Estudios; vi en su ordenador el icono de MetaTrader 5 y no pude evitar preguntar. Me explicó que tenía una estrategia automatizada para el EURUSD, pero que le había costado años desarrollarla y no pensaba desvelar su 'secreto' a nadie.\n\nEse día volví a casa con un reto personal: yo también quería construir algo así. Él era alguien con carrera, máster y años de experiencia, pero aun así acepté el desafío. Pasé tardes, días y semanas enteras experimentando con Python, intercalando mis estudios con la búsqueda de esa idea ganadora y otros proyectos con python. Fracasé una y otra vez. Cada vez que creía tener algo que funcionaba, descubría rastros de data leakage o contaminación de datos. En cuanto corregía el error, la rentabilidad se esfumaba.\n\nTras muchos intentos, dejé de intentar ignorar la dura realidad: me faltaban Alphas (señales predictivas reales). Sabía que 'si entra basura, sale basura'. Por eso, con la estadística en la mano, decidí centrarme en construir el pipeline que me ayudaría en el proceso.\n\nEmprendí este proyecto sabiendo que los indicadores convencionales están muy explotados y que las probabilidades de éxito inmediato eran bajas. Sin embargo, el resultado fue un éxito en lo que realmente importa: he creado una infraestructura robusta para testear ideas con rigor científico y separar, por fin, la suerte de la verdadera ventaja estadística. Ahora no solo tengo código; tengo un método sólido para validar cualquier Alpha que surja en el futuro.` },
+              { id: "03", title: "Réplica SRDDQN", sub: "Deep RL", link: "https://github.com/goco41/SRDDQN4tr", problem: "Papers académicos con métricas irreales por omisión de spread.", solution: "Implementación de arquitectura TimesNet (Fourier) con costes reales.", usage: "Evaluación de viabilidad de modelos de Deep Learning en producción.", storyTitle: "Rigor vs. Hype Académico", story: `Tras dedicar mucho tiempo a intentar diseñar un sistema propio que fuese robusto, llegué a una conclusión lógica: existen investigadores y mentes brillantes que ya han publicado soluciones avanzadas. ¿Por qué no apoyarme en su experiencia? Así fue como, tras una búsqueda intensiva de literatura técnica, descubrí el paper SRDDQN.\n\nLo que me cautivó de este estudio fue el uso de TimesNet. Me pareció fascinante encontrar una arquitectura que tratase las series temporales como imágenes mediante la Transformada de Fourier, que es, casualmente, uno de mis conceptos matemáticos favoritos. La posibilidad de aplicar visión por computador al análisis financiero, sumada a un mecanismo de auto-recompensa dinámica (donde la IA decide cómo premiar su propio aprendizaje), me motivó a implement el proyecto por completo.\n\nEl proceso fue exigente: desde el diseño de diagramas de flujo hasta la reconstrucción de los gráficos de rendimiento. Sin embargo, la réplica también me aportó una lección valiosa sobre el rigor en la investigación. El paper original reportaba rentabilidades y Ratios de Sharpe extraordinarios que, en mi implementación, no se alcanzaron.\n\nAl analizar las causas, identifiqué factores críticos: el paper utiliza un split simple de train y test, lo que facilita un sobreajuste (overfitting) a este último. Además, con casi total seguridad, el estudio omite el impacto del spread entre Bid y Ask. En mi réplica, al ser más estricto con los costes reales de ejecución, los resultados fueron más humildes, pero también más honestos y cercanos a la realidad del mercado. A pesar de la discrepancia en las métricas, este proyecto ha sido una de las experiencias de aprendizaje más enriquecedoras que he tenido.` }
             ],
-            labels: { problem: "Problema", solution: "Solución", usage: "Uso Empresarial", storyBtn: "Leer Origen", linkBtn: "GitHub" }
+            labels: { problem: "Problema", solution: "Solución", usage: "Impacto", storyBtn: "Leer Origen", linkBtn: "Código Fuente" }
+          },
+          sidequests: {
+            sectionLabel: "Personal Research & Development",
+            title: ["Sidequests", "/ 01.5"],
+            items: [
+              {
+                title: "Agentic RAG Framework",
+                tag: "LLM ENGINEERING",
+                desc: "Sistema de Recuperación Aumentada por Generación operando en local. El pipeline ingesta datos de arXiv, genera <strong>embeddings densos multilingües</strong> y recupera con FAISS. Posteriormente aplica <strong>reranking cruzado</strong> (Alibaba-NLP) para maximizar la relevancia del contexto. Finalmente, mitiga alucinaciones validando cada cita mediante <strong>Natural Language Inference (NLI)</strong> sobre los extractos originales.",
+                tags: ["Embeddings", "Reranking", "NLI"],
+                linkText: "Ver Repositorio",
+                link: "https://github.com/goco41/Agentic_RAG"
+              },
+              {
+                title: "Farming Pattern Optimizer",
+                tag: "COMBINATORIAL OPTIMIZATION",
+                desc: "Resolución de un problema espacial NP-Hard para optimizar simulaciones en Urbek. Combina <strong>Constraint Programming (Google OR-Tools)</strong> con metaheurísticas <strong>ALNS</strong> adaptadas de papers académicos sobre rutas de vehículos (VRP). Para hacer viable el cómputo, utiliza <strong>Numba</strong> para compilar cálculos de distancias a nivel de máquina, superando los récords teóricos de eficiencia de la comunidad.",
+                tags: ["OR-Tools", "Numba", "ALNS"],
+                linkText: "Probar Editor",
+                link: "https://goco41.github.io/Urbek_City_Patterns/",
+                repoText: "Ver Repositorio",
+                repoLink: "https://github.com/goco41/Urbek_City_Patterns"
+              }
+            ]
           },
           edu: {
-            section: "02 / Trayectoria", title: ["Formación", "& Liderazgo"],
+            section: "02 / Trayectoria", title: ["Formación", "y Liderazgo"],
+            badgeText: "UPO • ECONOMICS • ANALYTICS • DATA • ",
             items: [
               { title: "Grado en Análisis Económico", place: "Universidad Pablo de Olavide", year: "2025 - 2029", desc: "Teoría económica avanzada y métodos econométricos. Delegado de clase y miembro activo del club de debate." },
               { title: "Tutorías de Estadística", place: "Apoyo Académico", year: "2025 - 2026", desc: "Liderazgo académico impartiendo clases de apoyo a compañeros. Enfoque en claridad pedagógica y resolución de ejercicios complejos." },
               { title: "Inglés B2", place: "Escuela Oficial de Idiomas", year: "Certificado", desc: "Competencia profesional completa, permitiendo la lectura fluida de papers técnicos y documentación especializada." }
             ]
           },
-          skills: { 
-            section: "Credenciales", subtitle: "[ Certificaciones Oficiales ]", title: ["Credenciales", "& Expertise"], graphTitle: "Tech Ecosystem", graphLabel: "● Grafo Vivo",
-            nodes: { core: "GONZALO", dl: "DEEP LEARNING", quant: "QUANT ANALYTICS", eng: "INGENIERÍA", pytorch: "PyTorch", rl: "Reinforcement Learning", timesnet: "Series Temporales", automl: "AutoML", backtest: "Backtesting", stats: "Validación Estadística", markets: "Mercados", risk: "Gestión de Riesgo", python: "Python (Adv)", pandas: "Pandas/NumPy", numba: "Numba", scikit: "Scikit-learn" }
-          },
-          footer: { locationLabel: "Ubicación", location: "Sevilla, España", contactLabel: "Contacto", aboutLabel: "Sobre mí", about: "Me gusta aprender y mejorar constantemente. Soy curioso, constante y risueño, y disfruto trabajando en equipo y ayudando a otras personas a entender conceptos complejos de forma clara y estructurada." }
+          skills: { section: "Credenciales", subtitle: "[ Certificaciones Oficiales ]", title: ["Credenciales", "y Expertise"], graphTitle: "Ecosistema Tecnológico", graphLabel: "● Grafo Vivo", nodes: { core: "GONZALO", dl: "DEEP LEARNING", quant: "QUANT ANALYTICS", eng: "INGENIERÍA", pytorch: "PyTorch", rl: "Reinforcement Learning", timesnet: "Series Temporales", automl: "AutoML", backtest: "Backtesting", stats: "Validación Estadística", markets: "Mercados", risk: "Gestión de Riesgo", python: "Python (Adv)", pandas: "Pandas/NumPy", numba: "Numba", scikit: "Scikit-learn" } },
+          footer: {
+            systemLabel: "Apagado del sistema / Contacto",
+            locationLabel: "Ubicación",
+            location: "Sevilla, España",
+            contactLabel: "Contacto",
+            githubLabel: "GitHub",
+            githubLink: "Perfil GitHub",
+            aboutLabel: "Sobre mí",
+            about: "Me gusta aprender y mejorar constantemente. Soy curioso, constante y risueño, y disfruto trabajando en equipo y ayudando a otras personas a entender conceptos complejos de forma clara y estructurada.",
+            rights: "Todos los derechos reservados"
+          }
         },
         en: {
           nav: [ { label: 'Profile', id: '#profile' }, { label: 'Projects', id: '#projects' }, { label: 'Career', id: '#trajectory' }, { label: 'Expertise', id: '#expertise' } ],
-          hero: { lines: ['Quantitative', '& Machine', 'Learning', 'Economics'], desc: ['Economics Student (UPO).', 'Specialized in Quant Finance & Deep Learning.'] },
+          hero: { 
+            title1: "Quantitative", 
+            title2: "Economics", 
+            title3: "& Machine Learning",
+            desc: ['Economics Student (UPO).', 'Specialized in Quant Finance & Deep Learning.'] 
+          },
           intro: "Economics student passionate about the intersection of economic theory and artificial intelligence. Focused on extracting signal from complex financial data using advanced models.",
           githubBtn: "GitHub Profile",
           cvDownload: "Download CV",
           cvView: "View CV",
+          marquee: "MACHINE LEARNING • ALGORITHMIC TRADING • DEEP LEARNING • ECONOMETRICS • PYTHON • DATA SCIENCE • QUANTITATIVE FINANCE • ",
           projects: {
-  section: "01 / Portfolio",
-  title: ["Featured", "Projects"],
-  cta: "Swipe to explore",
-  items: [
-    {
-      id: "01",
-      title: "Cine ML",
-      sub: "Python · AutoML",
-      link: "https://github.com/goco41/ML-DS-para-Peliculas",
-      problem: "Disappearance of personalized recommendation tools.",
-      solution: "ML pipeline integrating external APIs and AutoML to predict affinity.",
-      usage: "User experience personalization in media libraries.",
-      storyTitle: "The Palomitacas Challenge",
-      story: `Years ago, I started using a website called Palomitacas. I chose it because it had a feature I absolutely loved: it predicted the rating I would personally give a movie before I watched it. One day, that feature disappeared without explanation.
-
-At that time, I was just beginning in data analysis and machine learning, so I tried to replicate it on my own. I failed miserably and ended up putting the idea aside.
-
-A few months ago, I decided to revisit that personal challenge to see how much I had improved. I knew my dataset was tiny and that extracting meaningful signal from it would be like “killing flies with a cannon,” but I didn’t care. I wanted to squeeze every bit of information possible and see how far I could push it.
-
-I wasn’t looking for a perfect model or textbook metrics I wanted a tool that could guide me.
-
-The result is a Machine Learning project in Python that integrates external APIs, AutoML techniques, and custom models. It is a humble solution, but it works and achieves its goal. I hope to return to this dataset in the future with more knowledge and see how the metrics continue to evolve.`
-    },
-    {
-      id: "02",
-      title: "Alphas",
-      sub: "Quant Finance",
-      link: "https://github.com/goco41/ind-4-alphas/tree/main",
-      problem: "Fragility and data leakage in algorithmic trading strategies.",
-      solution: "Robust statistical validation framework and rigorous backtesting.",
-      usage: "Validation of predictive signals before execution in real markets.",
-      storyTitle: "The Search for Alpha",
-      story: `Almost from the moment I started with Python, I knew I wanted to apply it to finance and data but I was fully aware of the field’s complexity. Because of that, I decided to postpone it and focus on my studies and university entrance exams.
-
-Everything changed one day while talking with my Head of Studies. I noticed the MetaTrader 5 icon on his computer and couldn’t resist asking about it. He explained that he had an automated strategy for EURUSD, but that it had taken him years to develop and he had no intention of revealing his “secret” to anyone.
-
-That day I went home with a personal challenge: I wanted to build something like that too. He was someone with a degree, a master’s, and years of experience and yet I accepted the challenge.
-
-I spent afternoons, days, and entire weeks experimenting with Python, balancing my studies with the search for that winning idea and other side projects. I failed over and over again. Every time I thought I had something that worked, I discovered traces of data leakage or contamination. The moment I corrected the issue, profitability vanished.
-
-After many attempts, I stopped trying to ignore the harsh reality: I lacked real Alphas (genuine predictive signals). I understood clearly that “garbage in, garbage out.”
-
-So, with statistics in hand, I decided to focus on building the pipeline that would support the process.
-
-I undertook this project knowing that conventional indicators are heavily exploited and that the probability of immediate success was low. However, the result was a success in what truly matters: I built a robust infrastructure to test ideas with scientific rigor and finally separate luck from real statistical edge.
-
-Now I don’t just have code I have a solid method to validate any Alpha that emerges in the future.`
-    },
-    {
-      id: "03",
-      title: "SRDDQN Replica",
-      sub: "Deep RL",
-      link: "https://github.com/goco41/SRDDQN4tr",
-      problem: "Academic papers with unrealistic metrics due to omission of spread.",
-      solution: "Implementation of TimesNet architecture (Fourier) with real execution costs.",
-      usage: "Feasibility assessment of Deep Learning models in production environments.",
-      storyTitle: "Rigor vs. Academic Hype",
-      story: `After dedicating a significant amount of time to designing a robust system of my own, I reached a logical conclusion: there are brilliant researchers who have already published advanced solutions. Why not build upon their work?
-
-That’s how, after an intensive search through technical literature, I discovered the SRDDQN paper.
-
-What captivated me about this study was its use of TimesNet. I found it fascinating that the architecture treated time series as images using the Fourier Transform which happens to be one of my favorite mathematical concepts. The possibility of applying computer vision techniques to financial analysis, combined with a dynamic self-reward mechanism (where the AI decides how to reward its own learning process), motivated me to implement the project in full.
-
-The process was demanding: from designing flow diagrams to reconstructing performance charts. However, the replication also taught me a valuable lesson about rigor in research.
-
-The original paper reported extraordinary returns and Sharpe Ratios that I was unable to replicate.
-
-When analyzing the causes, I identified critical factors: the paper used a simple train-test split, which facilitates overfitting to the test set. Additionally, it almost certainly omitted the impact of the Bid-Ask spread.
-
-In my implementation, by being stricter with real execution costs, the results were more modest but also more honest and closer to actual market conditions.
-
-Despite the discrepancy in performance metrics, this project has been one of the most enriching learning experiences I have ever had.`
-    }
-  ],
-  labels: {
-    problem: "Problem",
-    solution: "Solution",
-    usage: "Business Value",
-    storyBtn: "Read Origin",
-    linkBtn: "GitHub"
-  }
-}
-,
+            section: "01 / Portfolio", title: ["Featured", "Projects"], cta: "Swipe to explore",
+            items: [
+              { id: "01", title: "Cine ML", sub: "Python · AutoML", link: "https://github.com/goco41/ML-DS-para-Peliculas", problem: "Disappearance of personalized recommendation tools.", solution: "ML pipeline integrating external APIs and AutoML to predict affinity.", usage: "User experience personalization in media libraries.", storyTitle: "The Palomitacas Challenge", story: `...` },
+              { id: "02", title: "Alphas", sub: "Quant Finance", link: "https://github.com/goco41/ind-4-alphas", problem: "Fragility and data leakage in algorithmic trading strategies.", solution: "Robust statistical validation framework and rigorous backtesting.", usage: "Validation of predictive signals before execution in real markets.", storyTitle: "The Search for Alpha", story: `...` },
+              { id: "03", title: "SRDDQN Replica", sub: "Deep RL", link: "https://github.com/goco41/SRDDQN4tr", problem: "Academic papers with unrealistic metrics due to omission of spread.", solution: "Implementation of TimesNet architecture (Fourier) with real execution costs.", usage: "Feasibility assessment of Deep Learning models in production environments.", storyTitle: "Rigor vs. Academic Hype", story: `...` }
+            ],
+            labels: { problem: "Problem", solution: "Solution", usage: "Impact", storyBtn: "Read Origin", linkBtn: "Source Code" }
+          },
+          sidequests: {
+            sectionLabel: "Personal Research & Development",
+            title: ["Sidequests", "/ 01.5"],
+            items: [
+              {
+                title: "Agentic RAG Framework",
+                tag: "LLM ENGINEERING",
+                desc: "Retrieval-Augmented Generation system operating locally. The pipeline ingests arXiv data, generates <strong>dense multilingual embeddings</strong>, and retrieves with FAISS. It then applies <strong>cross-encoder reranking</strong> (Alibaba-NLP) to maximize context relevance. Finally, it mitigates hallucinations by validating each citation using <strong>Natural Language Inference (NLI)</strong> on the original excerpts.",
+                tags: ["Embeddings", "Reranking", "NLI"],
+                linkText: "View Repository",
+                link: "https://github.com/goco41/Agentic_RAG"
+              },
+              {
+                title: "Farming Pattern Optimizer",
+                tag: "COMBINATORIAL OPTIMIZATION",
+                desc: "Resolution of an NP-Hard spatial problem to optimize simulations in Urbek. It combines <strong>Constraint Programming (Google OR-Tools)</strong> with <strong>ALNS</strong> metaheuristics adapted from academic vehicle routing (VRP) papers. To make computation viable, it uses <strong>Numba</strong> to compile distance calculations at the machine level, surpassing the community's theoretical efficiency records.",
+                tags: ["OR-Tools", "Numba", "ALNS"],
+                linkText: "Try Editor",
+                link: "https://goco41.github.io/Urbek_City_Patterns/",
+                repoText: "View Repository",
+                repoLink: "https://github.com/goco41/Urbek_City_Patterns"
+              }
+            ]
+          },
           edu: {
-            section: "02 / Career", title: ["Education", "& Leadership"],
+            section: "02 / Career", title: ["Education", "and Leadership"],
+            badgeText: "UPO • ECONOMICS • ANALYTICS • DATA • ",
             items: [
               { title: "Degree in Economic Analysis", place: "Pablo de Olavide University", year: "2025 - 2029", desc: "Rigorous training in economic theory and econometric methods. Class representative and active member of the debate club." },
               { title: "Statistics Tutoring", place: "Academic Support", year: "2025 - 2026", desc: "Academic leadership teaching support classes to peers. Focus on pedagogical clarity and solving complex exercises." },
               { title: "English B2", place: "Official School of Languages", year: "Certified", desc: "Full professional proficiency, allowing fluent reading of technical papers and specialized documentation." }
             ]
           },
-          skills: { section: "Credentials", subtitle: "[ Official Certifications ]", title: ["Credentials", "& Expertise"], graphTitle: "Tech Ecosystem", graphLabel: "● Live Graph", nodes: { core: "GONZALO", dl: "DEEP LEARNING", quant: "QUANT ANALYTICS", eng: "ENGINEERING", pytorch: "PyTorch", rl: "Reinforcement Learning", timesnet: "Time Series", automl: "AutoML", backtest: "Backtesting", stats: "Stat Validation", markets: "Markets", risk: "Risk Mgmt", python: "Python (Adv)", pandas: "Pandas/NumPy", numba: "Numba", scikit: "Scikit-learn" } },
-          footer: { locationLabel: "Location", location: "Seville, Spain", contactLabel: "Contact", aboutLabel: "About Me", about: "I love learning and constantly improving. I am curious, consistent, and cheerful, and I enjoy working in a team and helping others understand complex concepts clearly and structurally." }
+          skills: { section: "Credentials", subtitle: "[ Official Certifications ]", title: ["Credentials", "and Expertise"], graphTitle: "Tech Ecosystem", graphLabel: "● Live Graph", nodes: { core: "GONZALO", dl: "DEEP LEARNING", quant: "QUANT ANALYTICS", eng: "ENGINEERING", pytorch: "PyTorch", rl: "Reinforcement Learning", timesnet: "Time Series", automl: "AutoML", backtest: "Backtesting", stats: "Stat Validation", markets: "Markets", risk: "Risk Mgmt", python: "Python (Adv)", pandas: "Pandas/NumPy", numba: "Numba", scikit: "Scikit-learn" } },
+          footer: {
+            systemLabel: "System Shutdown / Contact",
+            locationLabel: "Location",
+            location: "Seville, Spain",
+            contactLabel: "Contact",
+            githubLabel: "GitHub",
+            githubLink: "GitHub Profile",
+            aboutLabel: "About Me",
+            about: "I love learning and constantly improving. I am curious, consistent, and cheerful, and I enjoy working in a team and helping others understand complex concepts clearly and structurally.",
+            rights: "All rights reserved"
+          }
         }
       };
 
       const LanguageContext = createContext();
 
-      // --- UTILS ---
       const useGSAP = (callback, deps = []) => {
         useLayoutEffect(() => {
           const ctx = gsap.context(callback);
@@ -280,45 +322,56 @@ Despite the discrepancy in performance metrics, this project has been one of the
         return React.cloneElement(children, { ref: btnRef, className: `${children.props.className || ""} ${className}` });
       };
 
-      // --- SHARED UI ---
+      const CircularText = ({ text, radius = 50 }) => {
+        const chars = text.split('');
+        const degree = 360 / chars.length;
+        return (
+          <div className="relative w-32 h-32 circular-text opacity-40">
+            {chars.map((char, i) => (
+              <span key={i} className="absolute left-1/2 top-0 origin-[0_64px] font-mono text-[10px] font-bold" style={{ transform: `translateX(-50%) rotate(${i * degree}deg)` }}>{char}</span>
+            ))}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"><Activity size={24} /></div>
+          </div>
+        );
+      };
+
       const CVButtonGroup = ({ variant = "dark" }) => {
         const { t } = useContext(LanguageContext);
         const baseClass = variant === "dark" 
-          ? "px-6 py-4 border border-brand-blue/20 rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-blue hover:text-brand-cream transition-colors flex items-center gap-2"
+          ? "px-6 py-4 border border-brand-blue/20 rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-blue hover:text-brand-cream transition-colors flex items-center gap-2 bg-transparent"
           : "px-6 py-4 bg-brand-blue text-brand-cream rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-accent transition-colors flex items-center gap-2";
 
         return (
           <>
-            <MagneticButton>
-              <a href={CV_PATH} download className={baseClass}>
-                <i className="fas fa-file-download"></i> {t.cvDownload}
-              </a>
-            </MagneticButton>
-            <MagneticButton>
-              <a href={CV_PATH} target="_blank" className={baseClass}>
-                <i className="fas fa-eye"></i> {t.cvView}
-              </a>
-            </MagneticButton>
+            <MagneticButton><a href={CV_PATH} download className={baseClass}><i className="fas fa-file-download"></i> {t.cvDownload}</a></MagneticButton>
+            <MagneticButton><a href={CV_PATH} target="_blank" rel="noopener noreferrer" className={baseClass}><i className="fas fa-eye"></i> {t.cvView}</a></MagneticButton>
           </>
         );
       };
 
-      // --- SECTIONS ---
+      const Marquee = ({ text }) => {
+        const content = text + text + text;
+        return (
+          <div className="w-full overflow-hidden border-y border-brand-blue/10 bg-brand-cream/50 py-3 relative z-20">
+            <div className="animate-marquee whitespace-nowrap flex font-mono text-[10px] uppercase tracking-widest text-brand-blue/60 font-bold"><span>{content}</span></div>
+          </div>
+        );
+      };
 
       const Header = () => {
         const { lang, setLang, t, lenis } = useContext(LanguageContext);
         const headerRef = useRef(null);
-        useGSAP(() => { gsap.from(headerRef.current, { yPercent: -100, opacity: 0, duration: 1, ease: "power4.out", delay: 0.2 }); });
+        useGSAP(() => { gsap.fromTo(headerRef.current, { yPercent: -100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1, ease: "power4.out", delay: 0.2 }); });
         const scrollTo = (id) => { if (lenis) lenis.scrollTo(id, { offset: 0, duration: 1.5 }); };
 
         return (
           <header ref={headerRef} className="fixed top-0 left-0 w-full z-50 px-6 py-6 mix-blend-difference text-brand-cream pointer-events-none">
             <div className="flex justify-between items-start pointer-events-auto">
-              <div className="flex flex-col cursor-pointer" onClick={() => scrollTo(0)}>
-                <span className="font-mono text-xs uppercase tracking-widest font-bold">Gonzalo</span>
-                <span className="font-mono text-xs uppercase tracking-widest opacity-60">Pilar Sánchez</span>
+              <div className="flex flex-col cursor-pointer group" onClick={() => scrollTo(0)}>
+                <span className="font-mono text-xs uppercase tracking-widest font-bold flex items-center gap-2"><div className="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></div>Gonzalo</span>
+                <span className="font-mono text-[10px] uppercase tracking-widest opacity-60 ml-4 group-hover:text-brand-accent transition-colors">Pilar Sánchez</span>
               </div>
-              <div className="hidden md:flex gap-12 font-mono text-xs uppercase tracking-widest">
+              <div className="hidden md:flex gap-12 font-mono text-xs uppercase tracking-widest bg-white/5 backdrop-blur-md px-8 py-3 rounded-full border border-white/10">
                 {t.nav.map((item, i) => (
                   <div key={i} onClick={() => scrollTo(item.id)} className="group overflow-hidden cursor-pointer relative">
                     <span className="inline-block transition-transform duration-500 group-hover:-translate-y-full">{item.label}</span>
@@ -329,9 +382,7 @@ Despite the discrepancy in performance metrics, this project has been one of the
               <div className="flex items-center gap-4">
                 <button onClick={() => setLang(lang === 'es' ? 'en' : 'es')} className="flex items-center justify-center px-4 py-2 border border-brand-cream/20 rounded-full bg-brand-cream/5 backdrop-blur-sm group cursor-pointer hover:bg-brand-cream transition-colors duration-300">
                   <div className="flex gap-2 font-mono text-[10px] font-bold group-hover:text-brand-blue tracking-widest">
-                    <span className={lang === 'es' ? 'opacity-100' : 'opacity-40'}>ES</span>
-                    <span className="opacity-40">/</span>
-                    <span className={lang === 'en' ? 'opacity-100' : 'opacity-40'}>EN</span>
+                    <span className={lang === 'es' ? 'opacity-100' : 'opacity-40'}>ES</span><span className="opacity-40">/</span><span className={lang === 'en' ? 'opacity-100' : 'opacity-40'}>EN</span>
                   </div>
                 </button>
               </div>
@@ -342,25 +393,80 @@ Despite the discrepancy in performance metrics, this project has been one of the
 
       const Hero = () => {
         const { t, lang } = useContext(LanguageContext);
-        const titleRef = useRef(null);
+        const heroRef = useRef(null);
+
         useGSAP(() => {
           const tl = gsap.timeline();
-          tl.from(titleRef.current.querySelectorAll('.line-inner'), { yPercent: 100, duration: 1.2, stagger: 0.1, ease: "power4.out", delay: 0.5 })
-            .from('.hero-meta', { opacity: 0, y: 20, duration: 1, ease: "power3.out" }, "-=0.8");
+          
+          tl.fromTo('.hero-badge', 
+            { opacity: 0, y: 20 }, 
+            { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 }
+          )
+          .fromTo('.hero-title-line', 
+            { yPercent: 110, skewY: 2 }, 
+            { yPercent: 0, skewY: 0, duration: 1.2, stagger: 0.15, ease: 'power4.out' }, 
+            "-=0.6"
+          )
+          .fromTo('.hero-line-deco',
+            { scaleX: 0 },
+            { scaleX: 1, duration: 1, ease: 'power3.inOut' },
+            "-=0.8"
+          )
+          .fromTo('.hero-desc', 
+            { opacity: 0, x: -20 }, 
+            { opacity: 1, x: 0, duration: 1, ease: 'power2.out' }, 
+            "-=0.5"
+          );
         }, [lang]);
 
         return (
-          <section className="relative h-screen w-full overflow-hidden flex flex-col justify-end pb-20 px-6 bg-brand-blue text-brand-cream">
-            <div className="absolute inset-0 opacity-40"><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" className="w-full h-full object-cover grayscale mix-blend-overlay" /></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/20 to-brand-blue/90"></div>
-            <div className="relative z-10 w-full max-w-[90vw] max-h-[720px] mx-auto">
-              <div ref={titleRef} className="flex flex-col">
-                {t.hero.lines.map((line, i) => (<div key={i} className="overflow-hidden"><h1 className="line-inner text-[10.5vw] leading-[0.8] font-bold uppercase tracking-tightest mix-blend-screen">{line}</h1></div>))}
+          <section ref={heroRef} className="relative h-screen w-full overflow-hidden flex flex-col justify-center bg-brand-dark text-brand-cream border-b border-brand-cream/10">
+            <div className="absolute inset-0 bg-grid-dark opacity-[0.07]" style={{ backgroundPosition: 'center' }}></div>
+
+            <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vw] bg-brand-accent/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none animate-float"></div>
+            <div className="absolute bottom-1/4 right-[10%] w-[40vw] h-[40vw] bg-brand-blue/60 rounded-full blur-[100px] mix-blend-screen pointer-events-none animate-float" style={{ animationDelay: '-5s' }}></div>
+
+            <div className="absolute left-6 md:left-12 top-0 w-px h-full bg-gradient-to-b from-transparent via-brand-accent/30 to-transparent"></div>
+            <div className="absolute right-6 md:right-12 top-0 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
+
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-12 md:px-24 flex flex-col items-start">
+              
+              <div className="hero-badge font-mono text-[10px] md:text-xs uppercase tracking-widest text-brand-accent mb-8 flex items-center gap-3 border border-brand-accent/20 bg-brand-accent/5 px-4 py-2 rounded-full backdrop-blur-sm">
+                <div className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></div>
+                Gonzalo Pilar Sánchez • Analytics Profile
               </div>
-              <div className="hero-meta mt-12 flex justify-between items-end border-t border-brand-cream/20 pt-6">
-                <div className="max-w-md"><p className="font-mono text-xs sm:text-sm uppercase tracking-widest leading-relaxed opacity-80">{t.hero.desc[0]}<br/>{t.hero.desc[1]}</p></div>
-                <div className="animate-bounce"><ArrowRight className="rotate-90" /></div>
+
+              <div className="flex flex-col gap-1 md:gap-2">
+                <span className="reveal-overflow">
+                  <h1 className="hero-title-line text-[12vw] md:text-[8.5vw] leading-[0.9] font-bold tracking-tighter text-brand-cream">
+                    {t.hero.title1}
+                  </h1>
+                </span>
+                
+                <span className="reveal-overflow flex items-center gap-6">
+                  <h1 className="hero-title-line text-[12vw] md:text-[8.5vw] leading-[0.9] font-bold tracking-tighter text-transparent stroke-text font-figtree" style={{ WebkitTextStroke: '2px #F2F0EB' }}>
+                    {t.hero.title2}
+                  </h1>
+                </span>
+
+                <span className="reveal-overflow flex items-center gap-4 md:gap-8 mt-2 md:mt-4">
+                  <div className="hero-line-deco hidden md:block w-24 h-[2px] bg-brand-accent origin-left"></div>
+                  <h1 className="hero-title-line text-[7vw] md:text-[5vw] leading-[1.08] pb-1 font-medium tracking-tight text-brand-cream/80 flex items-center gap-4">
+                    <span className="text-brand-accent font-bold">&</span> Machine Learning
+                  </h1>
+                </span>
               </div>
+
+              <div className="hero-desc mt-16 md:mt-24 max-w-xl border-l-2 border-brand-accent pl-6">
+                <p className="font-mono text-xs md:text-sm uppercase tracking-widest leading-relaxed text-brand-cream/60">
+                  {t.hero.desc[0]} <br className="hidden md:block" /> {t.hero.desc[1]}
+                </p>
+              </div>
+            </div>
+
+            <div className="absolute bottom-12 left-12 md:left-24 font-mono text-[10px] tracking-widest uppercase flex items-center gap-4 text-brand-cream/40">
+              <div className="w-px h-16 bg-gradient-to-b from-brand-accent to-transparent"></div>
+              <span style={{ writingMode: 'vertical-rl' }} className="rotate-180">Scroll sequence</span>
             </div>
           </section>
         );
@@ -374,21 +480,23 @@ Despite the discrepancy in performance metrics, this project has been one of the
         }, [lang]);
 
         return (
-          <section id="profile" className="min-h-[80vh] flex items-center justify-center px-6 py-24 bg-brand-cream text-brand-blue">
-            <div className="max-w-5xl mx-auto">
-              <p ref={textRef} className="text-3xl md:text-5xl font-medium leading-[1.2] tracking-tight flex flex-wrap gap-x-[0.25em]">
-                {t.intro.split(" ").map((word, i) => (<span key={i} className="word transition-colors duration-300">{word}</span>))}
-              </p>
-              <div className="mt-20 flex flex-wrap gap-4 items-center">
-                 <MagneticButton>
-                    <a href="https://github.com/goco41" target="_blank" className="px-8 py-4 border border-brand-blue/20 rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-blue hover:text-brand-cream transition-colors duration-300 flex items-center gap-2">
-                      <Github size={16} /> {t.githubBtn}
-                    </a>
-                 </MagneticButton>
-                 <CVButtonGroup variant="dark" />
+          <>
+            <Marquee text={t.marquee} />
+            <section id="profile" className="relative min-h-[80vh] flex items-center justify-center px-6 py-24 bg-brand-cream text-brand-blue bg-grid overflow-hidden">
+              <div className="absolute top-12 left-6 font-mono text-[10px] tracking-widest opacity-30 flex items-center gap-2"><div className="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> ROOT_NODE // INTRO</div>
+              <div className="absolute bottom-12 right-6 font-mono text-[10px] tracking-widest opacity-30">[ LAT: 37.3891 / LON: -5.9845 ]</div>
+              
+              <div className="max-w-5xl mx-auto relative z-10 w-full text-center md:text-left">
+                <p ref={textRef} className="text-3xl md:text-5xl font-medium leading-[1.2] tracking-tight flex flex-wrap gap-x-[0.25em] justify-center md:justify-start">
+                  {t.intro.split(" ").map((word, i) => (<span key={i} className="word transition-colors duration-300">{word}</span>))}
+                </p>
+                <div className="mt-16 flex flex-wrap gap-4 items-center justify-center md:justify-start">
+                   <MagneticButton><a href="https://github.com/goco41" target="_blank" rel="noopener noreferrer" className="px-8 py-4 border border-brand-blue/20 rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-blue hover:text-brand-cream transition-colors duration-300 flex items-center gap-2 bg-transparent"><Github size={16} /> {t.githubBtn}</a></MagneticButton>
+                   <CVButtonGroup variant="dark" />
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </>
         );
       };
 
@@ -396,6 +504,7 @@ Despite the discrepancy in performance metrics, this project has been one of the
         const sectionRef = useRef(null);
         const [activeStory, setActiveStory] = useState(null);
         const { t, lang } = useContext(LanguageContext);
+        
         useGSAP(() => {
           const track = sectionRef.current.querySelector('.track');
           gsap.to(track, { x: () => -(track.scrollWidth - window.innerWidth), ease: "none", scrollTrigger: { trigger: sectionRef.current, pin: true, scrub: 1, end: () => `+=${track.scrollWidth - window.innerWidth}`, invalidateOnRefresh: true } });
@@ -403,33 +512,38 @@ Despite the discrepancy in performance metrics, this project has been one of the
 
         return (
           <>
-          <section id="projects" ref={sectionRef} className="overflow-hidden bg-brand-dark text-brand-cream">
+          <section id="projects" ref={sectionRef} className="overflow-hidden bg-brand-dark text-brand-cream relative">
              <div className="track flex w-fit h-screen">
-                <div className="w-screen h-full flex-shrink-0 flex flex-col justify-center p-8 md:p-24 border-r border-white/10">
-                   <span className="font-mono text-xs uppercase tracking-widest text-brand-accent mb-6">{t.projects.section}</span>
-                   <h2 className="text-[12vw] leading-[0.8] font-bold tracking-tightest">{t.projects.title[0]}<br/>{t.projects.title[1]}</h2>
-                   <div className="mt-12 flex items-center gap-4"><span className="font-mono text-xs uppercase tracking-widest opacity-50">{t.projects.cta}</span><ArrowRight size={16} className="animate-pulse" /></div>
+                <div className="w-screen h-full flex-shrink-0 flex flex-col justify-center p-8 md:p-24 border-r border-white/10 relative bg-grid-dark">
+                   <div className="absolute right-24 top-24 w-32 h-32 border border-white/10 rounded-full flex items-center justify-center opacity-20 hidden md:flex"><div className="w-16 h-16 border border-brand-accent rounded-full animate-pulse"></div></div>
+                   <span className="font-mono text-xs uppercase tracking-widest text-brand-accent mb-6 flex items-center gap-4"><span className="w-8 h-px bg-brand-accent"></span>{t.projects.section}</span>
+                   <h2 className="text-[12vw] leading-[0.8] font-bold tracking-tightest relative z-10">{t.projects.title[0]}<br/><span className="text-transparent stroke-text font-figtree" style={{ WebkitTextStroke: '2px #F2F0EB' }}>{t.projects.title[1]}</span></h2>
+                   <div className="mt-12 flex items-center gap-4"><span className="font-mono text-[10px] uppercase tracking-widest opacity-50 px-4 py-2 border border-white/10 rounded-full">{t.projects.cta}</span><ArrowRight size={16} className="text-brand-accent animate-bounce ml-2" /></div>
                 </div>
                 {t.projects.items.map((p, i) => (
-                  <div key={i} className="w-[85vw] md:w-[75vw] h-full flex-shrink-0 flex flex-col justify-between p-12 md:p-24 border-r border-white/10 relative group">
-                     <span className="absolute top-12 left-12 font-mono text-[15rem] md:text-[20rem] opacity-[0.03] font-bold leading-none select-none pointer-events-none">{p.id}</span>
-                     <div className="relative z-10 h-full flex flex-col justify-end">
-                        <span className="font-mono text-xs uppercase tracking-widest text-brand-accent mb-4 block">{p.sub}</span>
-                        <h3 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8">{p.title}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-brand-accent/20 pt-8 mb-12">
-                            <div><span className="font-mono text-[10px] uppercase tracking-widest text-brand-accent/80 mb-2 block">{t.projects.labels.problem}</span><p className="text-brand-cream/70 text-sm">{p.problem}</p></div>
-                            <div><span className="font-mono text-[10px] uppercase tracking-widest text-brand-accent/80 mb-2 block">{t.projects.labels.solution}</span><p className="text-brand-cream/70 text-sm">{p.solution}</p></div>
-                            <div><span className="font-mono text-[10px] uppercase tracking-widest text-brand-accent/80 mb-2 block">{t.projects.labels.usage}</span><p className="text-brand-cream/70 text-sm">{p.usage}</p></div>
+                  <div key={i} className="w-[85vw] md:w-[75vw] h-full flex-shrink-0 flex flex-col justify-between p-12 md:p-24 border-r border-white/10 relative group overflow-hidden">
+                     <div className="absolute top-0 right-0 w-full h-full opacity-[0.05] pointer-events-none group-hover:opacity-[0.08] transition-opacity duration-700">
+                        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><defs><pattern id={`dots-${i}`} x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="2" fill="white"/></pattern></defs><rect x="0" y="0" width="100%" height="100%" fill={`url(#dots-${i})`} /><circle cx="70%" cy="30%" r="200" stroke="white" strokeWidth="2" fill="none" opacity="0.3" /><circle cx="70%" cy="30%" r="300" stroke="white" strokeWidth="1" strokeDasharray="10 10" fill="none" opacity="0.2" /></svg>
+                     </div>
+                     <span className="absolute top-8 right-12 font-mono text-[10rem] md:text-[17rem] font-bold leading-none select-none pointer-events-none transition-transform duration-700 group-hover:scale-105" style={{ WebkitTextStroke: "2px rgba(255,255,255,0.08)", color: "transparent" }}>{p.id}</span>
+                     <div className="relative z-10 h-full flex flex-col justify-end max-w-5xl pb-10">
+                        <span className="font-mono text-xs md:text-sm uppercase tracking-widest text-brand-accent mb-4 block flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span> {p.sub}</span>
+                        <h3 className="text-6xl md:text-8xl font-bold tracking-tighter mb-8 text-brand-cream">{p.title}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-white/10 pt-8 mb-10">
+                            <div><span className="font-mono text-xs uppercase tracking-widest text-brand-accent/80 mb-3 block">{t.projects.labels.problem}</span><p className="text-brand-cream/90 text-base md:text-lg leading-relaxed">{p.problem}</p></div>
+                            <div><span className="font-mono text-xs uppercase tracking-widest text-brand-accent/80 mb-3 block">{t.projects.labels.solution}</span><p className="text-brand-cream/90 text-base md:text-lg leading-relaxed">{p.solution}</p></div>
+                            <div><span className="font-mono text-xs uppercase tracking-widest text-brand-accent/80 mb-3 block">{t.projects.labels.usage}</span><p className="text-brand-cream/90 text-base md:text-lg leading-relaxed">{p.usage}</p></div>
                         </div>
                         <div className="flex gap-4">
-                            <button onClick={() => setActiveStory(p)} className="px-8 py-4 bg-brand-cream text-brand-blue rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-accent hover:text-white transition-colors flex items-center gap-2"><BookOpen size={14} /> {t.projects.labels.storyBtn}</button>
-                            <a href={p.link} target="_blank" className="px-8 py-4 border border-brand-cream/20 rounded-full font-mono text-[10px] uppercase tracking-widest hover:bg-brand-cream hover:text-brand-blue transition-colors flex items-center gap-2">{t.projects.labels.linkBtn} <ArrowUpRight size={14} /></a>
+                            <button onClick={() => setActiveStory(p)} className="px-8 py-4 bg-brand-cream text-brand-blue rounded-full font-mono text-xs uppercase tracking-widest hover:bg-brand-accent hover:text-white transition-colors flex items-center gap-2"><BookOpen size={16} /> {t.projects.labels.storyBtn}</button>
+                            <a href={p.link} target="_blank" rel="noopener noreferrer" className="px-8 py-4 border border-brand-cream/20 text-brand-cream rounded-full font-mono text-xs uppercase tracking-widest hover:bg-brand-cream hover:text-brand-blue transition-colors flex items-center gap-2">{t.projects.labels.linkBtn} <ArrowUpRight size={16} /></a>
                         </div>
                      </div>
                   </div>
                 ))}
              </div>
           </section>
+
           {activeStory && (
             <div className="fixed inset-0 z-[100] pointer-events-auto">
               <div onClick={() => setActiveStory(null)} className="absolute inset-0 bg-brand-dark/60 backdrop-blur-sm"></div>
@@ -447,34 +561,174 @@ Despite the discrepancy in performance metrics, this project has been one of the
         );
       };
 
-      const EducationVertical = () => {
+      const Sidequests = () => {
         const { t, lang } = useContext(LanguageContext);
-        const [activeIdx, setActiveIdx] = useState(0);
+        const sectionRef = useRef(null);
+
         useGSAP(() => {
-          gsap.utils.toArray('.edu-card').forEach((item, i) => {
-            ScrollTrigger.create({ trigger: item, start: "top center", end: "bottom center", onEnter: () => setActiveIdx(i), onEnterBack: () => setActiveIdx(i) });
-          });
+          gsap.fromTo('.sidequest-item', 
+            { y: 50, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.2,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top 85%',
+              }
+            }
+          );
         }, [lang]);
 
         return (
-          <section id="trajectory" className="relative flex flex-col md:flex-row bg-brand-cream border-t border-brand-blue/10">
-            <div className="w-full md:w-1/2 h-auto md:h-screen sticky top-0 flex flex-col justify-between p-8 md:p-16 border-r border-brand-blue/10 bg-brand-cream z-10">
-              <div><span className="font-mono text-xs uppercase tracking-widest text-brand-blue/50 mb-4 block">{t.edu.section}</span><h2 className="text-5xl md:text-7xl font-bold text-brand-blue tracking-tighter mb-8">{t.edu.title[0]}<br/>{t.edu.title[1]}</h2></div>
-              <div className="hidden md:flex flex-col gap-4">
-                 {t.edu.items.map((e, i) => (
-                   <div key={i} className={`transition-all duration-500 flex items-center gap-4 ${activeIdx === i ? 'opacity-100 translate-x-4' : 'opacity-30'}`}><span className="font-mono text-xs">0{i+1}</span><span className="text-xl font-medium truncate max-w-[250px]">{e.title}</span></div>
-                 ))}
+          <section ref={sectionRef} className="py-24 md:py-32 px-6 flex flex-col justify-center bg-brand-cream border-t border-brand-blue/10 bg-grid relative overflow-hidden">
+            <div className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 font-mono text-[8rem] md:text-[15rem] opacity-[0.02] font-bold pointer-events-none rotate-90 md:rotate-0 tracking-tighter">
+              LAB
+            </div>
+            
+            <div className="max-w-4xl mx-auto w-full relative z-10">
+              <span className="font-mono text-[10px] uppercase tracking-widest opacity-40 mb-4 block text-center italic">{t.sidequests.sectionLabel}</span>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-20 text-center uppercase text-brand-blue">
+                {t.sidequests.title[0]} <span className="font-light text-brand-accent">{t.sidequests.title[1]}</span>
+              </h2>
+
+              <div className="space-y-4">
+                {t.sidequests.items.map((item, index) => (
+                  <div key={index} className="sidequest-item relative pl-8 py-6 border-l border-brand-blue/10 hover:border-brand-accent transition-all duration-500 hover:bg-brand-blue/[0.02] rounded-r-2xl cursor-default">
+                    <div className="absolute -left-[5px] top-[36px] w-2 h-2 rounded-full sidequest-indicator pointer-events-none"></div>
+                    
+                    <div className="flex flex-col md:flex-row justify-between items-baseline mb-3">
+                      <h3 className="text-2xl font-bold text-brand-blue flex items-center gap-3">
+                        {item.title}
+                      </h3>
+                      <span className="font-mono text-[10px] text-brand-accent font-bold mt-2 md:mt-0 px-2 py-1 bg-brand-accent/10 rounded">{item.tag}</span>
+                    </div>
+
+                    <div className="accordion-grid">
+                      <div className="overflow-hidden">
+                        <div className="accordion-text">
+                          <p className="text-brand-blue/80 text-lg pb-6 leading-relaxed" dangerouslySetInnerHTML={{ __html: item.desc }}></p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mt-2">
+                      <div className="flex flex-wrap gap-2 font-mono text-[10px] opacity-60 uppercase">
+                        {item.tags.map((tag, i) => (
+                          <span key={i} className="border border-brand-blue/20 px-2 py-1 rounded">{tag}</span>
+                        ))}
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        <a href={item.link} target="_blank" rel="noopener noreferrer" className="relative z-10 text-xs font-bold border-b border-brand-blue/50 pb-1 hover:text-brand-accent hover:border-brand-accent transition-all flex items-center group/link w-fit">
+                          {item.linkText} <ArrowUpRight size={14} className="ml-1 opacity-70 group-hover/link:opacity-100 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 transition-all" />
+                        </a>
+                        {item.repoLink && (
+                          <a href={item.repoLink} target="_blank" rel="noopener noreferrer" className="relative z-10 text-xs font-bold border-b border-brand-blue/30 pb-1 hover:text-brand-accent hover:border-brand-accent transition-all flex items-center group/link w-fit opacity-80">
+                            {item.repoText} <ArrowUpRight size={14} className="ml-1 opacity-70 group-hover/link:opacity-100 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 transition-all" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="w-full md:w-1/2">
-               {t.edu.items.map((edu, i) => (
-                 <div key={i} className="edu-card min-h-[80vh] flex flex-col justify-center p-8 md:p-16 border-b border-brand-blue/10 last:border-0">
-                    <span className="font-mono text-brand-accent mb-4 block">0{i+1}</span>
-                    <h3 className="text-3xl md:text-4xl font-bold text-brand-blue mb-2">{edu.title}</h3>
-                    <div className="flex gap-4 font-mono text-xs uppercase text-brand-blue/60 mb-8"><span>{edu.place}</span><span>•</span><span>{edu.year}</span></div>
-                    <p className="text-brand-blue/80 text-lg leading-relaxed">{edu.desc}</p>
-                 </div>
-               ))}
+          </section>
+        );
+      };
+
+      const EducationTimeline = () => {
+        const { t, lang } = useContext(LanguageContext);
+        
+        useGSAP(() => {
+          const cards = gsap.utils.toArray('.edu-card');
+          cards.forEach((card) => {
+            gsap.fromTo(card,
+              { y: 50, opacity: 0 },
+              {
+                y: 0, opacity: 1,
+                duration: 0.8,
+                ease: "power3.out",
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top 85%",
+                }
+              }
+            );
+          });
+          
+          gsap.fromTo('.edu-badge', 
+            { scale: 0, opacity: 0 },
+            { 
+              scale: 1, 
+              opacity: 1, 
+              duration: 1, 
+              ease: "back.out(1.5)", 
+              scrollTrigger: { 
+                trigger: '.edu-badge', 
+                start: "top 90%" 
+              } 
+            }
+          );
+        }, [lang]);
+
+        return (
+          <section id="trajectory" className="py-24 md:py-32 px-6 bg-brand-cream border-t border-brand-blue/10 bg-grid relative overflow-hidden">
+            <div className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 font-mono text-[8rem] md:text-[15rem] opacity-[0.02] font-bold pointer-events-none -rotate-90 md:rotate-0 tracking-tighter">
+              PATH
+            </div>
+            
+            <div className="max-w-5xl mx-auto relative z-10">
+              <div className="text-center mb-24">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-brand-blue/50 mb-4 block">
+                  <span className="inline-block w-8 h-px bg-brand-blue/30 align-middle mr-4"></span>
+                  {t.edu.section}
+                  <span className="inline-block w-8 h-px bg-brand-blue/30 align-middle ml-4"></span>
+                </span>
+                <h2 className="text-4xl md:text-6xl font-bold text-brand-blue tracking-tighter">
+                  {t.edu.title[0]} <span className="text-transparent stroke-text font-figtree" style={{ WebkitTextStroke: '2px #0A1245' }}>{t.edu.title[1]}</span>
+                </h2>
+              </div>
+
+              <div className="relative">
+                <div className="absolute left-[15px] md:left-1/2 top-0 bottom-0 w-px bg-brand-blue/10 md:-translate-x-1/2"></div>
+                
+                <div className="space-y-12 md:space-y-24">
+                  {t.edu.items.map((edu, i) => (
+                    <div key={i} className={`edu-card relative flex flex-col md:flex-row items-start md:items-center justify-between group ${i % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+                      
+                      <div className="absolute left-[15px] md:left-1/2 w-4 h-4 rounded-full border-2 border-brand-blue bg-brand-cream -translate-x-1/2 mt-[28px] md:mt-0 z-10 group-hover:bg-brand-accent group-hover:border-brand-accent transition-colors duration-300">
+                        <div className="absolute inset-0 bg-brand-accent rounded-full animate-ping opacity-0 group-hover:opacity-20"></div>
+                      </div>
+
+                      <div className="hidden md:block w-[45%]"></div>
+                      
+                      <div className={`w-full md:w-[45%] pl-12 md:pl-0 ${i % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12 text-left'}`}>
+                        <div className="bg-white p-6 md:p-8 rounded-2xl border border-brand-blue/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group-hover:border-brand-blue/20">
+                          <div className={`absolute top-0 w-1 h-full bg-brand-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${i % 2 === 0 ? 'right-0' : 'left-0'}`}></div>
+                          
+                          <div className={`flex flex-wrap gap-2 font-mono text-[10px] uppercase text-brand-blue/60 mb-4 ${i % 2 === 0 ? 'md:justify-end' : 'justify-start'}`}>
+                            <span className="bg-brand-cream px-3 py-1 rounded-full border border-brand-blue/5">{edu.year}</span>
+                            <span className="bg-brand-accent/10 text-brand-accent px-3 py-1 rounded-full font-bold border border-brand-accent/10">{edu.place}</span>
+                          </div>
+                          
+                          <h3 className="text-xl md:text-2xl font-bold text-brand-blue mb-3 tracking-tight">{edu.title}</h3>
+                          <p className="text-brand-blue/80 text-sm md:text-base leading-relaxed">{edu.desc}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="relative h-32 mt-16 md:mt-24 edu-badge">
+                  <div className="absolute left-[15px] md:left-1/2 -translate-x-1/2 top-0 bg-brand-cream py-4 z-10">
+                    <CircularText text={t.edu.badgeText} />
+                  </div>
+                </div>
+
+              </div>
             </div>
           </section>
         );
@@ -504,19 +758,20 @@ Despite the discrepancy in performance metrics, this project has been one of the
         useGSAP(() => { gsap.to('.neural-node', { y: "random(-10, 10)", x: "random(-5, 5)", duration: "random(2, 4)", repeat: -1, yoyo: true, ease: "sine.inOut", stagger: { amount: 1.5, from: "center" } }); }, []);
 
         return (
-          <div className="relative w-full aspect-[4/3] md:aspect-[2/1] bg-brand-cream rounded-3xl overflow-hidden border border-brand-blue/10 my-12 shadow-inner">
-             <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#0A1245 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+          <div className="relative w-full aspect-[4/3] md:aspect-[2/1] bg-white rounded-3xl overflow-hidden border border-brand-blue/10 my-8 shadow-[inset_0_0_100px_rgba(10,18,69,0.02)]">
+             <div className="absolute top-4 left-6 font-mono text-[10px] text-brand-blue/30 z-10 uppercase">Data_Viz: Interactive Nodes</div>
+             <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#0A1245 1.5px, transparent 1.5px)', backgroundSize: '30px 30px' }}></div>
              <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
                {connections.map((conn, i) => {
                  const s = nodes.find(n => n.id === conn.from); const e = nodes.find(n => n.id === conn.to);
                  const active = activeCategory && (conn.from === activeCategory || conn.to === activeCategory || (activeCategory === 'core' && conn.from === 'core'));
-                 return (<line key={i} x1={`${s.x}%`} y1={`${s.y}%`} x2={`${e.x}%`} y2={`${e.y}%`} stroke={active ? "#2A45C2" : "#0A1245"} strokeWidth={active ? 2 : 1} strokeOpacity={active ? 0.6 : 0.1} className="neural-line" />);
+                 return (<line key={i} x1={`${s.x}%`} y1={`${s.y}%`} x2={`${e.x}%`} y2={`${e.y}%`} stroke={active ? "#2A45C2" : "#0A1245"} strokeWidth={active ? 2 : 1} strokeOpacity={active ? 0.6 : 0.15} className="neural-line" />);
                })}
              </svg>
              {nodes.map((node) => {
                const active = activeCategory === node.id || (activeCategory && nodes.find(n => n.id === activeCategory)?.type === 'hub' && (node.parent === activeCategory || (activeCategory === node.id) || (node.id === 'core'))) || (activeCategory === 'core' && node.type === 'hub');
                return (
-                 <div key={node.id} className={`neural-node absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer z-10 flex flex-col items-center justify-center ${node.type === 'root' ? 'w-24 h-24 bg-brand-blue text-brand-cream z-20 font-bold text-xs' : node.type === 'hub' ? 'w-16 h-16 bg-white border border-brand-blue/10 hover:border-brand-accent' : 'px-3 py-1 bg-white/80 text-[10px]'} rounded-full transition-all duration-300 ${active ? 'scale-110 shadow-xl opacity-100 grayscale-0' : 'opacity-70 grayscale'}`} style={{ left: `${node.x}%`, top: `${node.y}%` }} onMouseEnter={() => setActiveCategory(node.id)} onMouseLeave={() => setActiveCategory(null)}>
+                 <div key={node.id} className={`neural-node absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer z-10 flex flex-col items-center justify-center ${node.type === 'root' ? 'w-24 h-24 bg-brand-blue text-brand-cream z-20 font-bold text-xs shadow-2xl ring-8 ring-brand-blue/10' : node.type === 'hub' ? 'w-16 h-16 bg-white border border-brand-blue/10 hover:border-brand-accent shadow-lg' : 'px-3 py-1.5 bg-white/90 backdrop-blur-sm border border-brand-blue/5 text-[10px] shadow-sm'} rounded-full transition-all duration-300 ${active ? 'scale-110 shadow-xl opacity-100 grayscale-0 ring-4 ring-brand-accent/20' : 'opacity-70 grayscale hover:grayscale-0'}`} style={{ left: `${node.x}%`, top: `${node.y}%` }} onMouseEnter={() => setActiveCategory(node.id)} onMouseLeave={() => setActiveCategory(null)}>
                     {node.type === 'root' ? node.label : node.type === 'hub' ? (<div className="flex flex-col items-center gap-1"><div className={active ? 'text-brand-accent' : 'text-brand-blue'}>{node.icon}</div><span className="text-[8px] font-mono uppercase font-bold">{node.label}</span></div>) : (<span className="font-mono font-medium whitespace-nowrap">{node.label}</span>)}
                  </div>
                );
@@ -528,59 +783,57 @@ Despite the discrepancy in performance metrics, this project has been one of the
       const CertificationsAndSkills = () => {
         const { t, lang } = useContext(LanguageContext);
         const certs = [
-  { 
-    name: "Deep Learning Specialization", 
-    issuer: "DeepLearning.AI", 
-    logo: "https://learn.deeplearning.ai/assets/dlai-logo.png", 
-    link: "https://www.coursera.org/account/accomplishments/specialization/7ND7TBWJMWN6" 
-  },
-  { 
-    name: "Machine Learning Specialization", 
-    issuer: "Stanford University", 
-    logo: "https://upload.wikimedia.org/wikipedia/commons/6/68/Stanford_logo.png", 
-    link: "https://www.coursera.org/account/accomplishments/specialization/EHJNK64CH2KH" 
-  },
-  { 
-    name: "Financial Markets", 
-    issuer: "Yale University", 
-    logo: "https://upload.wikimedia.org/wikipedia/commons/2/20/Yale_Logo.png", 
-    link: "https://www.coursera.org/account/accomplishments/verify/GXI9YC44R2E2" 
-  }
-]
-;
+          { name: "Deep Learning Specialization", issuer: "DeepLearning.AI", logo: "https://learn.deeplearning.ai/assets/dlai-logo.png", link: "https://www.coursera.org/account/accomplishments/specialization/7ND7TBWJMWN6" },
+          { name: "Machine Learning Specialization", issuer: "Stanford University", logo: "https://upload.wikimedia.org/wikipedia/commons/6/68/Stanford_logo.png", link: "https://www.coursera.org/account/accomplishments/specialization/EHJNK64CH2KH" },
+          { name: "Financial Markets", issuer: "Yale University", logo: "https://upload.wikimedia.org/wikipedia/commons/2/20/Yale_Logo.png", link: "https://www.coursera.org/account/accomplishments/verify/GXI9YC44R2E2" }
+        ];
 
         return (
-          <section id="expertise" className="bg-brand-cream py-32 px-6">
-             <div className="flex justify-between items-end mb-20 border-b border-brand-blue/10 pb-8">
-               <h2 className="text-4xl md:text-6xl font-bold text-brand-blue tracking-tighter">{t.skills.title[0]}<br/>{t.skills.title[1]}</h2>
-               <div className="hidden md:block font-mono text-xs uppercase text-brand-blue/50">{t.skills.subtitle}</div>
-             </div>
-             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
-               {certs.map((c, i) => (
-                 <a href={c.link} target="_blank" key={i} className="cert-card group relative min-h-[350px] border border-brand-blue/10 rounded-2xl overflow-hidden flex flex-col justify-between p-8 hover:border-brand-accent/40 transition-all duration-500 bg-white/50">
-                    <div className="bg-layer absolute inset-0 flex items-center justify-center pointer-events-none"><img
-  src={c.logo}
-  className={`object-contain -translate-y-[25px] ${
-    c.issuer === "DeepLearning.AI"
-      ? "w-64 h-64"
-      : c.issuer === "Stanford University"
-      ? "w-48 h-48"
-      : "w-32 h-32"
-  }`}
-  alt={c.issuer}
-/>
-</div>
-                    <div className="relative z-10 flex justify-between items-start"><span className="font-mono text-[10px] uppercase text-brand-blue/40">Credential</span><ExternalLink size={16} className="text-brand-accent opacity-0 group-hover:opacity-100" /></div>
-                    <div className="relative z-10"><span className="block font-mono text-xs text-brand-accent mb-2">{c.issuer}</span><h3 className="text-2xl font-bold text-brand-blue leading-tight">{c.name}</h3></div>
-                 </a>
-               ))}
-             </div>
-             <div className="pt-16 border-t border-brand-blue/10">
-                <div className="flex justify-between items-center mb-8"><h3 className="font-mono text-xs uppercase tracking-widest text-brand-blue/60">{t.skills.graphTitle}</h3><span className="font-mono text-[10px] uppercase text-brand-accent animate-pulse">{t.skills.graphLabel}</span></div>
-                <NeuralSkillGraph />
-                <div className="mt-20 flex flex-wrap gap-6 justify-center">
-                  <CVButtonGroup variant="light" />
-                </div>
+          <section id="expertise" className="bg-brand-cream bg-grid py-32 px-6">
+             <div className="max-w-7xl mx-auto">
+               <div className="flex justify-between items-end mb-20 border-b border-brand-blue/10 pb-8">
+                 <div>
+                   <span className="font-mono text-[10px] uppercase tracking-widest text-brand-blue/50 mb-4 block">03 / {t.skills.section}</span>
+                   <h2 className="text-4xl md:text-6xl font-bold text-brand-blue tracking-tighter">
+                     {t.skills.title[0]}<br/>
+                     <span className="text-transparent stroke-text font-figtree" style={{ WebkitTextStroke: '1.5px #0A1245' }}>{t.skills.title[1]}</span>
+                   </h2>
+                 </div>
+                 <div className="hidden md:block font-mono text-[10px] uppercase text-brand-blue/50 border border-brand-blue/10 px-4 py-2 rounded-full">{t.skills.subtitle}</div>
+               </div>
+               
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-32">
+                 {certs.map((c, i) => (
+                    <a href={c.link} target="_blank" rel="noopener noreferrer" key={i} className="cert-card group relative min-h-[350px] border border-brand-blue/10 rounded-3xl overflow-hidden flex flex-col justify-between p-8 hover:border-brand-accent/40 transition-all duration-500 bg-white/70 backdrop-blur-sm hover:shadow-2xl hover:shadow-brand-blue/5 hover:-translate-y-2">
+                      <div className="bg-layer absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <img src={c.logo} className={`object-contain -translate-y-[20px] transition-transform duration-700 group-hover:scale-110 ${c.issuer === "DeepLearning.AI" ? "w-64 h-64" : c.issuer === "Stanford University" ? "w-48 h-48" : "w-32 h-32"}`} alt={c.issuer}/>
+                      </div>
+                      <div className="relative z-10 flex justify-between items-start">
+                        <span className="font-mono text-[10px] uppercase text-brand-blue/50 bg-white/50 px-3 py-1 rounded-full border border-brand-blue/5">Credential</span>
+                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-brand-blue/10 shadow-sm opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                          <ExternalLink size={14} className="text-brand-accent" />
+                        </div>
+                      </div>
+                      <div className="relative z-10 bg-white/80 backdrop-blur-md p-4 rounded-xl border border-white">
+                        <span className="block font-mono text-[10px] text-brand-accent mb-1">{c.issuer}</span>
+                        <h3 className="text-xl font-bold text-brand-blue leading-tight">{c.name}</h3>
+                      </div>
+                   </a>
+                 ))}
+               </div>
+               
+               <div className="pt-24 border-t border-brand-blue/10 relative">
+                  <div className="absolute top-24 left-1/2 -translate-x-1/2 font-mono text-[10rem] opacity-[0.02] font-bold pointer-events-none">MAP</div>
+                  <div className="flex justify-between items-center mb-8">
+                    <h3 className="font-mono text-xs uppercase tracking-widest text-brand-blue/60 flex items-center gap-3"><Cpu size={16}/> {t.skills.graphTitle}</h3>
+                    <span className="font-mono text-[10px] uppercase text-brand-accent animate-pulse bg-brand-accent/10 px-3 py-1 rounded-full">{t.skills.graphLabel}</span>
+                  </div>
+                  <NeuralSkillGraph />
+                  <div className="mt-24 mb-12 flex flex-col items-center">
+                    <span className="font-mono text-[10px] uppercase text-brand-blue/40 mb-6 tracking-widest">[ END_OF_FILE ]</span>
+                    <div className="flex flex-wrap gap-6 justify-center"><CVButtonGroup variant="light" /></div>
+                  </div>
+               </div>
              </div>
           </section>
         );
@@ -589,28 +842,100 @@ Despite the discrepancy in performance metrics, this project has been one of the
       const Footer = () => {
         const { t, lang } = useContext(LanguageContext);
         const footerRef = useRef(null);
-        useGSAP(() => { gsap.from('.footer-content', { yPercent: -50, opacity: 0, scrollTrigger: { trigger: footerRef.current, start: "top bottom", end: "bottom bottom", scrub: true } }); }, [lang]);
+        
+        useGSAP(() => {
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: footerRef.current,
+              start: "top 85%",
+            }
+          });
+
+          tl.fromTo('.footer-line', 
+            { scaleX: 0 }, 
+            { scaleX: 1, duration: 1, ease: 'power3.inOut', stagger: 0.2 }
+          )
+          .fromTo('.footer-item', 
+            { y: 20, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power2.out' }, 
+            "-=0.5"
+          );
+        }, [lang]);
 
         return (
-          <footer ref={footerRef} className="bg-brand-blue text-brand-cream pt-32 pb-12 px-6 relative overflow-hidden">
-             <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-5"><span className="text-[25vw] font-bold leading-none select-none absolute top-[-5vw] left-[-2vw]">GONZALO</span></div>
-             <div className="footer-content relative z-10 container mx-auto">
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-32">
-                 <div><span className="font-mono text-xs tracking-widest opacity-40 mb-6 block">{t.footer.locationLabel}</span><p className="text-lg flex items-center gap-2"><MapPin size={18} /> {t.footer.location}</p></div>
-                 <div><span className="font-mono text-xs tracking-widest opacity-40 mb-6 block">{t.footer.contactLabel}</span><a href="mailto:gonzalopilar2005@gmail.com" className="text-lg hover:text-brand-accent transition-colors block break-all">gonzalopilar2005@gmail.com</a></div>
-                 <div className="lg:col-span-2">
-                    <span className="font-mono text-xs tracking-widest opacity-40 mb-6 block">{t.footer.aboutLabel}</span>
-                    <p className="text-brand-cream/70 text-lg leading-relaxed">{t.footer.about}</p>
-                 </div>
-               </div>
-               <div className="flex flex-col md:flex-row justify-between items-end pt-12 border-t border-brand-cream/10">
-                 <h2 className="text-[12vw] leading-[0.8] font-bold uppercase mb-8 md:mb-0">Pilar<br/>Sánchez</h2>
-                 <div className="flex gap-8 font-mono text-xs opacity-60">
-                   <a href="https://github.com/goco41" target="_blank" className="hover:opacity-100 flex items-center gap-2"><Github size={14} /> GitHub</a>
-                   <a href="mailto:gonzalopilar2005@gmail.com" className="hover:opacity-100 flex items-center gap-2"><Mail size={14} /> Email</a>
-                 </div>
-               </div>
-             </div>
+          <footer ref={footerRef} className="relative bg-brand-dark text-brand-cream pt-24 pb-8 px-6 md:px-12 overflow-hidden border-t border-white/10">
+            <div className="absolute inset-0 bg-grid-dark opacity-[0.05] pointer-events-none"></div>
+            
+            <div className="relative z-10 max-w-7xl mx-auto">
+              
+              <div className="flex justify-between items-end mb-16 footer-item">
+                <div className="font-mono text-[10px] tracking-widest text-brand-accent uppercase flex items-center gap-3">
+                  <div className="w-2 h-2 bg-brand-accent animate-pulse rounded-full"></div>
+                  {t.footer.systemLabel}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 mb-24">
+                
+                <div className="md:col-span-5 footer-item">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-brand-cream/40 mb-6 block border-b border-white/10 pb-4">
+                    {t.footer.aboutLabel}
+                  </span>
+                  <p className="text-brand-cream/80 text-base leading-relaxed max-w-md">
+                    {t.footer.about}
+                  </p>
+                </div>
+
+                <div className="hidden md:block md:col-span-1"></div>
+
+                {/* Triángulo: ubicación y contacto arriba, GitHub centrado abajo */}
+                <div className="md:col-span-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10">
+                  <div className="footer-item">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-brand-cream/40 mb-6 block border-b border-white/10 pb-4">
+                      {t.footer.locationLabel}
+                    </span>
+                    <p className="text-base text-brand-cream/90 flex items-center gap-2">
+                      <MapPin size={16} className="text-brand-accent" /> {t.footer.location}
+                    </p>
+                  </div>
+
+                  <div className="footer-item">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-brand-cream/40 mb-6 block border-b border-white/10 pb-4">
+                      {t.footer.contactLabel}
+                    </span>
+                    <a href="mailto:gonzalopilar2005@gmail.com" className="text-base text-brand-cream/90 hover:text-brand-accent transition-colors flex items-center gap-2 group">
+                      <Mail size={16} className="text-brand-accent" />
+                      gonzalopilar2005@gmail.com
+                      <ArrowUpRight size={14} className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" />
+                    </a>
+                  </div>
+
+                  <div className="footer-item md:col-span-2 md:max-w-md md:mx-auto md:mt-2">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-brand-cream/40 mb-6 block border-b border-white/10 pb-4">
+                      {t.footer.githubLabel}
+                    </span>
+                    <a href="https://github.com/goco41" target="_blank" rel="noopener noreferrer" className="text-base text-brand-cream/90 hover:text-brand-accent transition-colors flex items-center gap-2 group">
+                      <Github size={16} className="text-brand-cream/40 group-hover:text-brand-accent transition-colors" />
+                      {t.footer.githubLink}
+                      <ArrowUpRight size={14} className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="footer-line w-full h-px bg-white/10 mb-8 origin-left"></div>
+
+              <div className="flex justify-between items-center footer-item font-mono text-[10px] uppercase tracking-widest opacity-40">
+                <div className="flex items-center gap-4">
+                  <span className="font-bold text-brand-cream">Gonzalo Pilar Sánchez</span>
+                  <span className="hidden md:inline">© 2026 {t.footer.rights}</span>
+                </div>
+                <div>
+                  <span>v 2.0.26</span>
+                </div>
+              </div>
+              
+            </div>
           </footer>
         );
       };
@@ -626,9 +951,16 @@ Despite the discrepancy in performance metrics, this project has been one of the
 
         return (
           <LanguageContext.Provider value={{ lang, setLang, t: TRANSLATIONS[lang], lenis }}>
-            <div className="w-full">
+            <div className="w-full font-sans antialiased selection:bg-brand-accent selection:text-white">
               <Header />
-              <main><Hero /><Intro /><HorizontalProjects /><EducationVertical /><CertificationsAndSkills /></main>
+              <main>
+                <Hero />
+                <Intro />
+                <HorizontalProjects />
+                <Sidequests />
+                <EducationTimeline />
+                <CertificationsAndSkills />
+              </main>
               <Footer />
             </div>
           </LanguageContext.Provider>
